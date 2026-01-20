@@ -23,12 +23,12 @@ public class Equipment {
     @OneToMany(mappedBy = "equipment")
     private List<EquipmentAssignment> assignments;
 
-    // Méthode utilitaire pour trouver qui a l'équipement "maintenant"
-    public EquipmentAssignment getCurrentAssignment() {
-        if (assignments == null) return null;
-        return assignments.stream()
-                .filter(a -> a.getEndDate() == null)
-                .findFirst()
-                .orElse(null);
-    }
+//    // Méthode utilitaire pour trouver qui a l'équipement "maintenant"
+//    public EquipmentAssignment  getCurrentAssignment() {
+//        if (assignments == null) return null;
+//        return assignments.stream()
+//                .filter(a -> a.getEndDate() == null)
+//                .findFirst()
+//                .orElse(null);
+//    }
 }

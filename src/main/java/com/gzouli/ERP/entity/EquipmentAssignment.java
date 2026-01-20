@@ -21,16 +21,10 @@ public class EquipmentAssignment {
     @JoinColumn(name = "equipment_id")
     private Equipment equipment;
 
-    // --- Les cibles possibles (Exclusif : l'un ou l'autre) ---
-
     @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
-
-//    @ManyToOne
-//    @JoinColumn(name = "employee_id")
-//    private Employee employee;
 
     // --- La période ---
 

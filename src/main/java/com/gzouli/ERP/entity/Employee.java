@@ -1,11 +1,13 @@
 package com.gzouli.ERP.entity;
 
+import com.gzouli.ERP.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,30 +18,44 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String idCardNumber;
-    private Double salary;
 
-    // Historique des équipements (PC, Voiture, Téléphone...) assignés à cet employé
-//    @OneToMany(mappedBy = "employee")
-//    @ToString.Exclude // Sécurité anti-boucle infinie
-//    private List<EquipmentAssignment> equipmentAssignments = new ArrayList<>();
+    @Column(unique = true, nullable = false)
+    private String cognitoId;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(unique = true, nullable = false)
+    private String idCardNumber;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    private String phoneNumber;
+    private String address;
+    private Double salary;
+    private LocalDate birthday;
+    private boolean active = true;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "employee")
+    private List<CarAssignment> carAssignments = new ArrayList<>();
 
     @OneToMany(mappedBy = "employee")
     @ToString.Exclude
     private List<SalaryAdvance> advances;
 
-    // 2. Gestion des Tâches (L'opérationnel)
-    // "Quelles sont les taches que je dois faire ?"
     @OneToMany(mappedBy = "assignee")
     @ToString.Exclude
     private List<Task> assignedTasks = new ArrayList<>();
 
-    // 3. Gestion du Suivi de Projet (Le management)
-    // "Quels sont les chantiers que je supervise ?"
-    // On utilise ManyToMany car un ingénieur suit plusieurs chantiers
-    // et un chantier peut avoir plusieurs ingénieurs.
     @ManyToMany
     @JoinTable(
             name = "employee_monitored_projects",
@@ -54,11 +70,11 @@ public class Employee {
     @ToString.Exclude
     private List<SiteJournal> journals = new ArrayList<>();
 
-//    public List<Equipment> getActiveEquipments() {
-//        if (equipmentAssignments == null) return new ArrayList<>();
-//        return equipmentAssignments.stream()
-//                .filter(a -> a.getEndDate() == null) // Seulement ceux actifs
-//                .map(EquipmentAssignment::getEquipment)
-//                .toList();
-//    }
+    public List<Car> getActiveEquipments() {
+        if (carAssignments == null) return new ArrayList<>();
+        return carAssignments.stream()
+                .filter(a -> a.getEndDate() == null) // Seulement ceux actifs
+                .map(CarAssignment::getCar)
+                .toList();
+    }
 }

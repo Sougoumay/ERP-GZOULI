@@ -13,10 +13,24 @@ spring:
     hibernate:
       ddl-auto: update
     # Optionnel : Pour voir les requêtes SQL dans la console (utile en dev)
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+  security:
+    oauth2:
+          resourceserver:
+            jwt:
+              # Attention à l'indentation !
+              issuer-uri: https://cognito-idp.${AWS_REGION}.amazonaws.com/${AWS_COGNITO_USER_POOL_ID}
+
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+
+aws:
+  accessKeyId: ${AWS_ACCESS_KEY_ID}
+  secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
+  region: ${AWS_REGION}
+  cognito:
+    userPoolId: ${AWS_COGNITO_USER_POOL_ID}
 
 server:
   port: 8080
