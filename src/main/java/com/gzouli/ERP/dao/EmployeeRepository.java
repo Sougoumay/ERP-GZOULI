@@ -16,4 +16,18 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     // Pour filtrer par rôle (ex: lister que les techniciens pour un projet)
     List<Employee> findByRole(Role role);
+
+    Optional<Employee> getEmployeesById(Long id);
+
+    Optional<Employee> getEmployeesByCognitoId(String cognitoId);
+
+    Optional<Employee> getEmployeesByRole(Role role);
+
+//    List<Employee> findAll();
+
+
+
+
+
+
 }

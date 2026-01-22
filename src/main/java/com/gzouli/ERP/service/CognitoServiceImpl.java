@@ -49,6 +49,7 @@ public class CognitoServiceImpl implements CognitoService {
 
         try {
             String password = generateStrongPassword();
+            password = "Default$$$123";
             System.out.println("Votre mot de passe sécurisé est : " + password);
             // 2. Création de l'utilisateur dans AWS Cognito
             // On envoie seulement email, given_name, family_name
