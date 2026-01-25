@@ -1,11 +1,9 @@
 package com.gzouli.ERP.service;
 
-import com.gzouli.ERP.dao.EmployeeRepository;
-import com.gzouli.ERP.dto.EmployeeRegistrationDTO;
-import com.gzouli.ERP.entity.Employee;
+import com.gzouli.ERP.exception.CognitoInteractionException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
@@ -15,124 +13,85 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CognitoServiceImpl implements CognitoService {
 
     private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
     private static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String DIGITS = "0123456789";
     private static final String SPECIAL = "!@#$%^&*()-_=+[]{}|;:,.<>?";
-
     private static final int PASSWORD_LENGTH = 12;
-
     private static final SecureRandom random = new SecureRandom();
 
     private final CognitoIdentityProviderClient cognitoClient;
-    private final EmployeeRepository employeeRepository;
+
 
     @Value("${aws.cognito.userPoolId}")
     private String userPoolId;
 
-    public CognitoServiceImpl(CognitoIdentityProviderClient cognitoClient, EmployeeRepository employeeRepository) {
-        this.cognitoClient = cognitoClient;
-        this.employeeRepository = employeeRepository;
-    }
 
     @Override
-    @Transactional
-    public Employee createEmployee(EmployeeRegistrationDTO dto) {
-        // 1. Validation locale
-        if (employeeRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Cet email existe déjà dans la base de données.");
-        }
-
-        String cognitoSub = "";
-
+    public String createCognitoUser(String email, String firstName, String lastName, String roleName) {
         try {
-            String password = generateStrongPassword();
-            password = "Default$$$123";
-            System.out.println("Votre mot de passe sécurisé est : " + password);
-            // 2. Création de l'utilisateur dans AWS Cognito
-            // On envoie seulement email, given_name, family_name
+            // 1. Création User
+            String tempPassword = "Default$$$123"; // Ou générateur aléatoire
+
             AdminCreateUserRequest userRequest = AdminCreateUserRequest.builder()
                     .userPoolId(userPoolId)
-                    .username(dto.getEmail())
-                    .temporaryPassword(password) // Mot de passe temporaire forcé
+                    .username(email)
+                    .temporaryPassword(tempPassword)
                     .userAttributes(
-                            AttributeType.builder().name("email").value(dto.getEmail()).build(),
-                            AttributeType.builder().name("email_verified").value("true").build(), // Auto-vérifié car créé par Admin
-                            AttributeType.builder().name("given_name").value(dto.getFirstName()).build(),
-                            AttributeType.builder().name("family_name").value(dto.getLastName()).build()
+                            AttributeType.builder().name("email").value(email).build(),
+                            AttributeType.builder().name("email_verified").value("true").build(),
+                            AttributeType.builder().name("given_name").value(firstName).build(),
+                            AttributeType.builder().name("family_name").value(lastName).build()
                     )
-                    .messageAction(MessageActionType.SUPPRESS) // On n'envoie pas l'email par défaut d'AWS (optionnel)
+                    .messageAction(MessageActionType.SUPPRESS)
                     .build();
 
             AdminCreateUserResponse response = cognitoClient.adminCreateUser(userRequest);
-            cognitoSub = response.user().username(); // C'est l'UUID unique (sub)
+            String sub = response.user().username();
 
-            // 3. Ajout au Groupe (Role) dans Cognito
-            // Cela permet au Front d'avoir le rôle dans le Token JWT
-            if (dto.getRole() != null) {
+            // 2. Ajout au Groupe
+            if (roleName != null) {
                 AdminAddUserToGroupRequest groupRequest = AdminAddUserToGroupRequest.builder()
                         .userPoolId(userPoolId)
-                        .username(dto.getEmail())
-                        .groupName(dto.getRole().name()) // ADMIN, INGENIEUR, ou TECHNICIEN
+                        .username(email)
+                        .groupName(roleName)
                         .build();
                 cognitoClient.adminAddUserToGroup(groupRequest);
             }
+            return sub;
 
         } catch (CognitoIdentityProviderException e) {
-            throw new RuntimeException("Erreur lors de la création Cognito: " + e.awsErrorDetails().errorMessage());
+            // On capture l'erreur AWS et on la relance proprement
+            throw new CognitoInteractionException(e.awsErrorDetails().errorMessage(), e);
         }
-
-        // 4. Sauvegarde dans la Base de Données Locale (PostgreSQL)
-        Employee newEmployee = new Employee();
-
-        // Lien technique
-        newEmployee.setCognitoId(cognitoSub);
-
-        // Données dupliquées (pour affichage rapide sans appeler AWS)
-        newEmployee.setEmail(dto.getEmail());
-        newEmployee.setFirstName(dto.getFirstName());
-        newEmployee.setLastName(dto.getLastName());
-
-        // Données Métiers Pures (Seulement en BDD)
-        newEmployee.setIdCardNumber(dto.getIdCardNumber());
-        newEmployee.setPhoneNumber(dto.getPhoneNumber());
-        newEmployee.setAddress(dto.getAddress());
-        newEmployee.setSalary(dto.getSalary());
-        newEmployee.setBirthday(dto.getBirthday());
-        newEmployee.setRole(dto.getRole());
-        newEmployee.setActive(true);
-
-        return employeeRepository.save(newEmployee);
     }
 
-    @Transactional
-    public void toggleEmployeeStatus(Long id, boolean shouldBeActive) {
-        // 1. Récupération dans la BDD Locale
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employé introuvable"));
-
-        // 2. Mise à jour Locale (Soft Delete)
-        employee.setActive(shouldBeActive);
-        employeeRepository.save(employee);
-
-
-        // 3. Mise à jour Cognito (Sécurité Bloquante)
-        if (!shouldBeActive) {
-            // DÉSACTIVATION : Empêche la connexion immédiate
-            AdminDisableUserRequest disableRequest = AdminDisableUserRequest.builder()
+    @Override
+    public void disableUser(String username) {
+        try {
+            AdminDisableUserRequest request = AdminDisableUserRequest.builder()
                     .userPoolId(userPoolId)
-                    .username(employee.getEmail()) // ou employee.getCognitoId() selon votre config AWS
+                    .username(username)
                     .build();
-            cognitoClient.adminDisableUser(disableRequest);
-        } else {
-            // RÉACTIVATION (au cas où il revient)
-            AdminEnableUserRequest enableRequest = AdminEnableUserRequest.builder()
+            cognitoClient.adminDisableUser(request);
+        } catch (CognitoIdentityProviderException e) {
+            throw new CognitoInteractionException("Impossible de désactiver l'utilisateur AWS", e);
+        }
+    }
+
+    @Override
+    public void enableUser(String username) {
+        try {
+            AdminEnableUserRequest request = AdminEnableUserRequest.builder()
                     .userPoolId(userPoolId)
-                    .username(employee.getEmail())
+                    .username(username)
                     .build();
-            cognitoClient.adminEnableUser(enableRequest);
+            cognitoClient.adminEnableUser(request);
+        } catch (CognitoIdentityProviderException e) {
+            throw new CognitoInteractionException("Impossible de réactiver l'utilisateur AWS", e);
         }
     }
 

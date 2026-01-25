@@ -31,12 +31,11 @@ public interface EmployeeService {
 
     /**
      * Met à jour les informations personnelles (Adresse, Tel, Nom, Prénom).
-     * Ne touche pas aux données sensibles comme le Salaire ou le Rôle (méthodes dédiées).
      * @param id L'identifiant de l'employé.
-     * @param updateDTO Les nouvelles informations.
+     * @param employeeSummaryDTO Les nouvelles informations.
      * @return L'employé mis à jour.
      */
-    EmployeeDetailDTO updateEmployeeDetails(Long id, EmployeeDetailDTO employeeDetailDTO);
+    EmployeeSummaryDTO updateEmployeeDetails(Long id, EmployeeSummaryDTO employeeSummaryDTO);
 
     /**
      * Active ou Désactive un employé (Soft Delete).
@@ -62,7 +61,7 @@ public interface EmployeeService {
      * Utilisé pour l'endpoint "/me".
      * @param cognitoId L'UUID fourni par AWS Cognito.
      */
-    EmployeeSummaryDTO getEmployeeByCognitoId(String cognitoId);
+//    EmployeeSummaryDTO getEmployeeByCognitoId(String cognitoId);
 
     /**
      * Liste tous les employés (filtrage possible par statut actif/inactif).
@@ -73,7 +72,7 @@ public interface EmployeeService {
      * Liste les employés selon leur rôle (ex: Récupérer tous les TECHNICIENS).
      * Utile pour assigner des tâches ou filtrer dans l'Admin.
      */
-    List<EmployeeSummaryDTO> getEmployeesByRole(Role role);
+    //List<EmployeeSummaryDTO> getEmployeesByRole(Role role);
 
     // ========================================================================
     // 3. GESTION RH & FINANCES (SALAIRES & AVANCES)

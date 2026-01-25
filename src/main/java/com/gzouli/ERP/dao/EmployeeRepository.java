@@ -2,6 +2,7 @@ package com.gzouli.ERP.dao;
 
 import com.gzouli.ERP.entity.Employee;
 import com.gzouli.ERP.enums.Role;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -22,6 +23,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Optional<Employee> getEmployeesByCognitoId(String cognitoId);
 
     Optional<Employee> getEmployeesByRole(Role role);
+
+    boolean existsByIdCardNumber(String idCardNumber);
 
 //    List<Employee> findAll();
 
