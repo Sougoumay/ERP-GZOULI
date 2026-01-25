@@ -1,7 +1,7 @@
 package com.gzouli.ERP.service;
 
 import com.gzouli.ERP.dao.EmployeeRepository;
-import com.gzouli.ERP.dto.EmployeeRegistrationDTO;
+import com.gzouli.ERP.dto.employee.EmployeeRegistrationDTO;
 import com.gzouli.ERP.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -11,22 +11,21 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
-    private final EmployeeRepository employeeRepository;
-    private final CognitoService cognitoService;
+    private final EmployeeService employeeService;
 
     @Override
     public void run(String... args) {
         String adminEmail = "sougoumay.hamid@gmail.com";
 
         // On vérifie si l'admin existe déjà pour ne pas le recréer à chaque redémarrage
-        if (!employeeRepository.existsByEmail(adminEmail)) {
+        if (!employeeService.isEmailExist(adminEmail)) {
             System.out.println("Création automatique de l'Administrateur Principal...");
 
             EmployeeRegistrationDTO adminDto = getEmployeeRegistrationDTO(adminEmail);
 
             // Appel du service que nous avons codé ensemble :
             // Il va créer le user dans Cognito ET dans la BDD locale
-            cognitoService.createEmployee(adminDto);
+            employeeService.createEmployee(adminDto);
 
             System.out.println("Admin créé avec succès. Mot de passe temporaire : Gzouli@2024");
         }

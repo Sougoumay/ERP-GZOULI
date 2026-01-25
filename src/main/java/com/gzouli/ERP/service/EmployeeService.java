@@ -1,16 +1,12 @@
 package com.gzouli.ERP.service;
 
-import com.gzouli.ERP.dto.EmployeeDetailDTO;
-import com.gzouli.ERP.dto.EmployeeRegistrationDTO;
-import com.gzouli.ERP.dto.EmployeeSummaryDTO;
-import com.gzouli.ERP.dto.EmployeeUpdateDTO;
+import com.gzouli.ERP.dto.employee.EmployeeDetailDTO;
+import com.gzouli.ERP.dto.employee.EmployeeRegistrationDTO;
+import com.gzouli.ERP.dto.employee.EmployeeSummaryDTO;
 import com.gzouli.ERP.entity.Car;
-import com.gzouli.ERP.entity.Employee;
 import com.gzouli.ERP.entity.Project;
 import com.gzouli.ERP.entity.SalaryAdvance;
-import com.gzouli.ERP.enums.Role;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +42,8 @@ public interface EmployeeService {
      * @param isActive Le nouveau statut souhaité.
      */
     void toggleEmployeeStatus(Long id, boolean isActive);
+
+    boolean isEmailExist(String email);
 
     // ========================================================================
     // 2. LECTURE ET RECHERCHE

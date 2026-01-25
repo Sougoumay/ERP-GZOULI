@@ -1,24 +1,19 @@
 package com.gzouli.ERP.service;
 
 import com.gzouli.ERP.dao.EmployeeRepository;
-import com.gzouli.ERP.dto.EmployeeDetailDTO;
-import com.gzouli.ERP.dto.EmployeeRegistrationDTO;
-import com.gzouli.ERP.dto.EmployeeSummaryDTO;
-import com.gzouli.ERP.dto.EmployeeUpdateDTO;
+import com.gzouli.ERP.dto.employee.EmployeeDetailDTO;
+import com.gzouli.ERP.dto.employee.EmployeeRegistrationDTO;
+import com.gzouli.ERP.dto.employee.EmployeeSummaryDTO;
 import com.gzouli.ERP.entity.Car;
 import com.gzouli.ERP.entity.Employee;
 import com.gzouli.ERP.entity.Project;
 import com.gzouli.ERP.entity.SalaryAdvance;
-import com.gzouli.ERP.enums.Role;
 import com.gzouli.ERP.exception.BusinessException;
 import com.gzouli.ERP.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,6 +102,11 @@ public class EmployeeServiceImpl implements EmployeeService{
         // 3. Mise à jour BDD Locale
         employee.setActive(isActive);
         employeeRepository.save(employee);
+    }
+
+    @Override
+    public boolean isEmailExist(String email) {
+        return employeeRepository.existsByEmail(email);
     }
 
     @Override

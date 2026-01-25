@@ -1,4 +1,4 @@
-package com.gzouli.ERP.dto;
+package com.gzouli.ERP.dto.employee;
 
 import lombok.Data;
 

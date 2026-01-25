@@ -1,10 +1,8 @@
-package com.gzouli.ERP.dto;
+package com.gzouli.ERP.dto.employee;
 
 import com.gzouli.ERP.enums.Role;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 

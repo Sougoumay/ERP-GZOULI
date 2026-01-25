@@ -1,14 +1,10 @@
 package com.gzouli.ERP.controller;
 
-import com.gzouli.ERP.dto.EmployeeDetailDTO;
-import com.gzouli.ERP.dto.EmployeeRegistrationDTO;
-import com.gzouli.ERP.dto.EmployeeSummaryDTO;
-import com.gzouli.ERP.dto.EmployeeUpdateDTO;
-import com.gzouli.ERP.entity.Employee;
-import com.gzouli.ERP.service.CognitoService;
+import com.gzouli.ERP.dto.employee.EmployeeDetailDTO;
+import com.gzouli.ERP.dto.employee.EmployeeRegistrationDTO;
+import com.gzouli.ERP.dto.employee.EmployeeSummaryDTO;
 import com.gzouli.ERP.service.EmployeeService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

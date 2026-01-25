@@ -6,6 +6,7 @@ import lombok.Setter;
 import jakarta.persistence.Id;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +27,8 @@ public class Project {
     private Double amountIncTax; // TTC
     private Double amountExTax;  // HT
     private Integer durationMonths;
+    private boolean active;
+    private LocalDate startDate;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "project")
