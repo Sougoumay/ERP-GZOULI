@@ -8,7 +8,7 @@ public interface ProjectService {
 
     // --- CRUD DE BASE ---
     ProjectSummaryDTO createProject(ProjectRegistrationDTO dto);
-    ProjectSummaryDTO updateProject(Long id, ProjectUpdateDTO dto);
+    ProjectSummaryDTO updateProject(Long id, ProjectSummaryDTO dto);
     ProjectDetailDTO getProjectById(Long id);
     List<ProjectSummaryDTO> getAllProjects(); // Retourne tout (Actif + Inactif)
 

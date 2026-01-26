@@ -38,13 +38,13 @@ public class ProjectController {
     // UPDATE
     @PutMapping("/{id}")
     public ResponseEntity<ProjectSummaryDTO> updateProject(@PathVariable Long id,
-                                                           @RequestBody ProjectUpdateDTO dto) {
+                                                           @RequestBody ProjectSummaryDTO dto) {
         return ResponseEntity.ok(projectService.updateProject(id, dto));
     }
 
     // SOFT DELETE / ENABLE
     // Exemple : PUT /api/projects/1/status?active=false
-    @PutMapping("/{id}/status")
+    @PatchMapping("/{id}/status")
     public ResponseEntity<Void> toggleStatus(@PathVariable Long id, @RequestParam boolean active) {
         projectService.toggleProjectStatus(id, active);
         return ResponseEntity.noContent().build();

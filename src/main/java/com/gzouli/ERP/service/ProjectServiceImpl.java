@@ -44,7 +44,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectSummaryDTO updateProject(Long id, ProjectUpdateDTO dto) {
+    public ProjectSummaryDTO updateProject(Long id, ProjectSummaryDTO dto) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Projet introuvable avec l'ID : " + id));
 
@@ -102,7 +102,10 @@ public class ProjectServiceImpl implements ProjectService {
         dto.setId(p.getId());
         dto.setName(p.getName());
         dto.setDescription(p.getDescription());
+        dto.setGeneralObjectives(p.getGeneralObjectives());
+        dto.setSpecificObjectives(p.getSpecificObjectives());
         dto.setAmountIncTax(p.getAmountIncTax());
+        dto.setAmountExTax(p.getAmountExTax());
         dto.setDurationMonths(p.getDurationMonths());
         dto.setStartDate(p.getStartDate());
         dto.setActive(p.isActive());
