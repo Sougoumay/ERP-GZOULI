@@ -46,8 +46,9 @@ public class EmployeeController {
     /**
      * Endpoint pour le "Soft Delete" et la Réactivation
      */
-    @PutMapping("/{id}/status")
-    public ResponseEntity<Void> toggleStatus(@PathVariable Long id, @RequestParam boolean active) {
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> toggleStatus(@PathVariable Long id, @RequestParam(name = "status") boolean active) {
+        // Appel au service (qui gère Cognito + BDD)
         employeeService.toggleEmployeeStatus(id, active);
         return ResponseEntity.noContent().build(); // 204 No Content
     }

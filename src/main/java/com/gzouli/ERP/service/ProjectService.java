@@ -28,9 +28,6 @@ public interface ProjectService {
     // Calcule : Montant HT - (Salaires + Charges Fixes + Charges Variables)
     Double calculateProjectProfitability(Long projectId);
 
-    // Suivi Facturation (Audio [13])
-    void addInvoice(Long projectId, InvoiceDTO invoiceDTO);
-
     void addInvoice(Long pId, InvoiceDTO iDto);
 
     // Reporting (Audio [49])

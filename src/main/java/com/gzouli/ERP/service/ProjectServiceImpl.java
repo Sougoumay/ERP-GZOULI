@@ -91,7 +91,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override public void assignSupervisor(Long pId, Long eId) {}
     @Override public void removeSupervisor(Long pId, Long eId) {}
     @Override public Double calculateProjectProfitability(Long pId) { return 0.0; }
-    @Override public void addInvoice(Long pId, InvoiceDTO iDto) {}
+    @Override
+    public void addInvoice(Long pId, InvoiceDTO iDto) {}
     @Override public MonthlyReportDataDTO getMonthlyReportData(Long pId, int m, int y) { return null; }
 
     // --- Helpers de Mapping ---

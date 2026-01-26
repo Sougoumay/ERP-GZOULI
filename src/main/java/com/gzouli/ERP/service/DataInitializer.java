@@ -27,15 +27,15 @@ public class DataInitializer implements CommandLineRunner {
             // Il va créer le user dans Cognito ET dans la BDD locale
             employeeService.createEmployee(adminDto);
 
-            System.out.println("Admin créé avec succès. Mot de passe temporaire : Gzouli@2024");
+            System.out.println("Admin créé avec succès. Mot de passe temporaire : Default$$$123");
         }
     }
 
     private static EmployeeRegistrationDTO getEmployeeRegistrationDTO(String adminEmail) {
         EmployeeRegistrationDTO adminDto = new EmployeeRegistrationDTO();
         adminDto.setEmail(adminEmail);
-        adminDto.setFirstName("Super");
-        adminDto.setLastName("Admin");
+        adminDto.setFirstName("Sougouma");
+        adminDto.setLastName("HAMID");
         adminDto.setRole(Role.ADMIN);
 
         // Données métiers par défaut (obligatoires selon votre Entité)

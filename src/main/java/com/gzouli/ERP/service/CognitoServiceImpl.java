@@ -65,6 +65,7 @@ public class CognitoServiceImpl implements CognitoService {
 
         } catch (CognitoIdentityProviderException e) {
             // On capture l'erreur AWS et on la relance proprement
+            System.out.println(e.awsErrorDetails().errorMessage());
             throw new CognitoInteractionException(e.awsErrorDetails().errorMessage(), e);
         }
     }
