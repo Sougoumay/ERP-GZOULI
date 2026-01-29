@@ -21,8 +21,8 @@ public interface ProjectService {
     // --- FONCTIONNALITÉS AVANCÉES (A implémenter plus tard) ---
 
     // Gestion de l'équipe (Audio [30])
-    void assignSupervisor(Long projectId, Long employeeId);
-    void removeSupervisor(Long projectId, Long employeeId);
+    void assignSupervisor(Long projectId, List<Long> employeeIds);
+    void removeSupervisor(Long projectId, List<Long> employeeIds);
 
     // Finances & Rentabilité (Audio [18-20])
     // Calcule : Montant HT - (Salaires + Charges Fixes + Charges Variables)

@@ -49,4 +49,16 @@ public class ProjectController {
         projectService.toggleProjectStatus(id, active);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{id}/team")
+    public ResponseEntity<Void> addTeamMembers(@PathVariable Long id, @RequestBody List<Long> employeeIds) {
+        projectService.assignSupervisor(id, employeeIds);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}/team")
+    public ResponseEntity<Void> removeTeamMember(@PathVariable Long id, @RequestBody List<Long> employeeIds) {
+        projectService.removeSupervisor(id, employeeIds);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -1,7 +1,9 @@
 package com.gzouli.ERP.service;
 
+import com.gzouli.ERP.dao.EmployeeRepository;
 import com.gzouli.ERP.dao.ProjectRepository;
 import com.gzouli.ERP.dto.project.*;
+import com.gzouli.ERP.entity.Employee;
 import com.gzouli.ERP.entity.Project;
 import com.gzouli.ERP.exception.BusinessException;
 import com.gzouli.ERP.exception.ResourceNotFoundException;
@@ -18,7 +20,7 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
-    // private final EmployeeRepository employeeRepository; // Pour plus tard
+     private final EmployeeRepository employeeRepository; // Pour plus tard
 
     @Override
     public ProjectSummaryDTO createProject(ProjectRegistrationDTO dto) {
@@ -88,8 +90,43 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     // --- Méthodes non implémentées pour le moment (Placeholders) ---
-    @Override public void assignSupervisor(Long pId, Long eId) {}
-    @Override public void removeSupervisor(Long pId, Long eId) {}
+    @Override
+    public void assignSupervisor(Long pId, List<Long> eIds) {
+        Project project = projectRepository.findById(pId)
+                .orElseThrow(() -> new ResourceNotFoundException("Projet introuvable"));
+
+        List<Employee> employeesToAdd = employeeRepository.findAllById(eIds);
+
+        if (employeesToAdd.size() != eIds.size()) {
+            throw new BusinessException("Certains employés spécifiés n'existent pas.");
+        }
+
+        List<Employee> currentTeam = project.getSupervisors();
+
+        for (Employee emp : employeesToAdd) {
+            if (!currentTeam.contains(emp)) {
+                currentTeam.add(emp);
+            }
+        }
+
+        // 5. Sauvegarde unique
+        projectRepository.save(project);
+    }
+
+    @Override
+    public void removeSupervisor(Long pId, List<Long> eIds) {
+        Project project = projectRepository.findById(pId)
+                .orElseThrow(() -> new ResourceNotFoundException("Projet introuvable"));
+
+        List<Employee> employeesToRemove = employeeRepository.findAllById(eIds);
+
+        if(project.getSupervisors().removeAll(employeesToRemove)) {
+            projectRepository.save(project);
+        } else {
+            throw new BusinessException("Cet employé ne fait pas partie de ce projet.");
+        }
+    }
+
     @Override public Double calculateProjectProfitability(Long pId) { return 0.0; }
     @Override
     public void addInvoice(Long pId, InvoiceDTO iDto) {}
