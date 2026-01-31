@@ -56,12 +56,7 @@ public class Employee {
     @ToString.Exclude
     private List<Task> assignedTasks = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "employee_monitored_projects",
-            joinColumns = @JoinColumn(name = "employee_id"),
-            inverseJoinColumns = @JoinColumn(name = "project_id")
-    )
+    @ManyToMany(mappedBy = "supervisors")
     @ToString.Exclude
     private List<Project> monitoredProjects = new ArrayList<>();
 

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -107,7 +108,10 @@ public class ProjectServiceImpl implements ProjectService {
             if (!currentTeam.contains(emp)) {
                 currentTeam.add(emp);
             }
+
+//            }
         }
+        project.setSupervisors(currentTeam);
 
         // 5. Sauvegarde unique
         projectRepository.save(project);
@@ -125,6 +129,21 @@ public class ProjectServiceImpl implements ProjectService {
         } else {
             throw new BusinessException("Cet employé ne fait pas partie de ce projet.");
         }
+    }
+
+    @Override
+    public List<TeamMemberDTO> getProjectTeam(Long id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Projet introuvable"));
+
+        List<TeamMemberDTO> dtos = new ArrayList<>();
+
+        if (project.getSupervisors() != null) {
+            dtos.addAll(project.getSupervisors().stream()
+                    .map(s -> new TeamMemberDTO(s.getId(), s.getFirstName(), s.getLastName(), s.getRole(), s.getEmail()))
+                    .toList());
+        }
+        return dtos;
     }
 
     @Override public Double calculateProjectProfitability(Long pId) { return 0.0; }
@@ -168,8 +187,8 @@ public class ProjectServiceImpl implements ProjectService {
         // Mapping des superviseurs (Ingénieurs assignés)
         // Attention : nécessite que la relation ManyToMany soit bien chargée
         if (p.getSupervisors() != null) {
-            dto.setSupervisorNames(p.getSupervisors().stream()
-                    .map(s -> s.getFirstName() + " " + s.getLastName())
+            dto.setTeamMembers(p.getSupervisors().stream()
+                    .map(s -> new TeamMemberDTO(s.getId(), s.getFirstName(), s.getLastName(), s.getRole(), s.getEmail()))
                     .collect(Collectors.toList()));
         }
 

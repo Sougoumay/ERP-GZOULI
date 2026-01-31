@@ -36,16 +36,19 @@ public class Project {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "project")
-    private List<Invoice> invoices;
+    private List<Invoice> invoices = new ArrayList<>();
 
     // On ne pointe plus vers Equipment directement, mais vers l'historique des assignations
     @ToString.Exclude
     @OneToMany(mappedBy = "project")
     private List<EquipmentAssignment> equipmentAssignments = new ArrayList<>();
 
-    // --- NOUVEAU : Liste des superviseurs (Ingénieurs/Chefs) qui suivent ce projet ---
-    @ManyToMany(mappedBy = "monitoredProjects")
-    @ToString.Exclude
+    @ManyToMany
+    @JoinTable(
+            name = "employee_monitored_projects", // Nom explicite de la table de jointure
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "employee_id")
+    )
     private List<Employee> supervisors = new ArrayList<>();
 
     // --- NOUVEAU : Liste des journaux de chantier (Comptes rendus) ---

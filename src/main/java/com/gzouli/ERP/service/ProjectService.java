@@ -23,6 +23,7 @@ public interface ProjectService {
     // Gestion de l'équipe (Audio [30])
     void assignSupervisor(Long projectId, List<Long> employeeIds);
     void removeSupervisor(Long projectId, List<Long> employeeIds);
+    List<TeamMemberDTO> getProjectTeam(Long id);
 
     // Finances & Rentabilité (Audio [18-20])
     // Calcule : Montant HT - (Salaires + Charges Fixes + Charges Variables)

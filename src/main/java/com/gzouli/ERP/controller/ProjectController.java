@@ -52,13 +52,22 @@ public class ProjectController {
 
     @PostMapping("/{id}/team")
     public ResponseEntity<Void> addTeamMembers(@PathVariable Long id, @RequestBody List<Long> employeeIds) {
+        System.out.println("L'ajout d'un elt est en cours pour ces id" + employeeIds.toString());
         projectService.assignSupervisor(id, employeeIds);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}/team")
-    public ResponseEntity<Void> removeTeamMember(@PathVariable Long id, @RequestBody List<Long> employeeIds) {
+    @GetMapping("/{id}/team")
+    public ResponseEntity<List<TeamMemberDTO>> getProjectTeam(@PathVariable Long id) {
+        return ResponseEntity.ok(projectService.getProjectTeam(id));
+    }
+
+
+    @PostMapping("/{id}/team/remove")
+    public ResponseEntity<Void> removeTeamMembers(@PathVariable Long id, @RequestBody List<Long> employeeIds) {
         projectService.removeSupervisor(id, employeeIds);
         return ResponseEntity.noContent().build();
     }
 }
+
+
