@@ -1,12 +1,9 @@
 package com.gzouli.ERP.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.Id;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
@@ -17,11 +14,24 @@ public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String invoiceNumber;
+
+    @Column(nullable = false)
     private LocalDate submissionDate;
     private Boolean isCertified; // Status approved for payment
-    private Double amountPaid;
+
+    @Column(nullable = false)
+    private Double amount;
+
+    @Column(nullable = false)
+    private String s3Key;
+
+    private String fileName;
 
     @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    @ToString.Exclude
     private Project project;
 }

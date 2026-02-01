@@ -1,5 +1,6 @@
 package com.gzouli.ERP.service;
 
+import com.gzouli.ERP.dto.invoice.InvoiceDTO;
 import com.gzouli.ERP.dto.project.*;
 
 import java.util.List;
