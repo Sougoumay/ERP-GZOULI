@@ -37,6 +37,7 @@ public class InvoiceController {
             objectMapper.registerModule(new JavaTimeModule()); // Pour gérer LocalDate
             InvoiceRegistrationDTO dto = objectMapper.readValue(invoiceJson, InvoiceRegistrationDTO.class);
 
+            System.out.println("Le service d'ajout des factures est appelés");
             invoiceService.addInvoiceToProject(projectId, dto, file);
 
             return ResponseEntity.ok().build();

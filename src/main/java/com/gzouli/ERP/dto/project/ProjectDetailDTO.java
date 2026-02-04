@@ -13,6 +13,9 @@ public class ProjectDetailDTO extends ProjectSummaryDTO {
 //    private Double consumedBudgetPercentage;
 //    private Integer monthsElapsed;
 
-    // La liste des membres de l'équipe pour l'affichage
     private List<TeamMemberDTO> teamMembers;
+
+    private Double totalInvoicesCertified; // Total Recettes Validées
+    private Double totalExpenses;          // Total Dépenses
+    private Double projectMargin;          // Gain (Recettes - Dépenses)
 }

@@ -29,7 +29,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         try {
             // 1. Upload S3 (Hors Transaction)
-            s3Key = fileStorageService.uploadFile(file);
+            s3Key = fileStorageService.uploadFile(file, "invoices");
+
+            System.out.println("La clé unique de l'objet est " + s3Key);
 
             // 2. Save BDD
             Project project = projectRepository.findById(projectId)

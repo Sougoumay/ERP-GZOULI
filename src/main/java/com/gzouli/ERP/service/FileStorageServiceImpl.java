@@ -13,6 +13,8 @@ import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignReques
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.Year;
 import java.util.UUID;
 
 @Service
@@ -30,9 +32,18 @@ public class FileStorageServiceImpl implements FileStorageService{
     }
 
     @Override
-    public String uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file, String path) {
         // Générer un nom unique pour éviter les conflits (ex: uuid_facture.pdf)
-        String key = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        String key =
+                path + "/"
+                        + LocalDate.now().getYear() + "/"
+                        + LocalDate.now().getMonth() + "/"
+                        + UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+        System.out.println("Key dans upload file \n " + key);
+
+        System.out.println("Le nom du bucket est : " + bucketName);
+
 
         try {
             PutObjectRequest putOb = PutObjectRequest.builder()

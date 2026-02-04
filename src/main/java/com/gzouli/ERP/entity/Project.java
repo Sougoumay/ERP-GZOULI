@@ -38,6 +38,10 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private List<Invoice> invoices = new ArrayList<>();
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<Expense> expenses = new ArrayList<>();
+
     // On ne pointe plus vers Equipment directement, mais vers l'historique des assignations
     @ToString.Exclude
     @OneToMany(mappedBy = "project")

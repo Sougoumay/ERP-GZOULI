@@ -65,6 +65,10 @@ public class Employee {
     @ToString.Exclude
     private List<SiteJournal> journals = new ArrayList<>();
 
+    @OneToMany(mappedBy = "performedBy")
+    @ToString.Exclude
+    private List<Expense> expensesMade = new ArrayList<>();
+
     public List<Car> getActiveEquipments() {
         if (carAssignments == null) return new ArrayList<>();
         return carAssignments.stream()
