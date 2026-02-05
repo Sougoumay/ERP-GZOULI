@@ -5,6 +5,8 @@ import com.gzouli.ERP.dao.ProjectRepository;
 import com.gzouli.ERP.dto.invoice.InvoiceDTO;
 import com.gzouli.ERP.dto.project.*;
 import com.gzouli.ERP.entity.Employee;
+import com.gzouli.ERP.entity.Expense;
+import com.gzouli.ERP.entity.Invoice;
 import com.gzouli.ERP.entity.Project;
 import com.gzouli.ERP.exception.BusinessException;
 import com.gzouli.ERP.exception.ResourceNotFoundException;
@@ -71,7 +73,36 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Projet introuvable avec l'ID : " + id));
 
-        return mapToDetail(project);
+        ProjectDetailDTO dto = mapToDetail(project);
+
+        // --- 1. Calcul des Recettes (Invoices) ---
+        // On somme uniquement si c'est certifié pour le "vrai" argent
+        double totalCertified = project.getInvoices().stream()
+                .filter(Invoice::getIsCertified) // Condition métier importante [4]
+                .mapToDouble(Invoice::getAmount)
+                .sum();
+
+        double totalSubmitted = project.getInvoices().stream()
+                .mapToDouble(Invoice::getAmount)
+                .sum();
+
+        // --- 2. Calcul des Dépenses Variables (Expenses) ---
+        double totalExpenses = project.getExpenses().stream()
+                .mapToDouble(Expense::getAmount)
+                .sum();
+
+        // --- 3. Calcul de la Marge Brute ---
+        // Note : Pour l'instant, on ne compte pas encore les salaires (Charges Fixes)
+        // car c'est une complexité RH à part [1].
+        double currentMargin = totalCertified - totalExpenses;
+
+        // --- 4. Injection dans le DTO ---
+        dto.setTotalInvoicesCertified(totalCertified);
+        dto.setTotalInvoicesSubmitted(totalSubmitted);
+        dto.setTotalExpenses(totalExpenses);
+        dto.setCurrentMargin(currentMargin);
+
+        return dto;
     }
 
     @Override

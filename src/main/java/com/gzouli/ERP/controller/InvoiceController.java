@@ -29,8 +29,6 @@ public class InvoiceController {
             @RequestPart("file") MultipartFile file     // Le fichier PDF
     ) {
 
-
-
         try {
             // Conversion manuelle du String JSON en Objet Java
             ObjectMapper objectMapper = new ObjectMapper();
@@ -58,5 +56,38 @@ public class InvoiceController {
     @GetMapping("")
     public ResponseEntity<List<InvoiceDTO>> getInvoices(@PathVariable Long projectId) {
         return ResponseEntity.ok(invoiceService.getInvoicesByProject(projectId));
+    }
+
+    @PutMapping(value = "/{invoiceId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateInvoice(
+            @PathVariable Long projectId,
+            @PathVariable Long invoiceId,
+            @RequestPart("invoice") String invoiceJson,
+            @RequestPart(value = "file", required = false) MultipartFile file // Fichier optionnel en update
+    ) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            InvoiceRegistrationDTO dto = mapper.readValue(invoiceJson, InvoiceRegistrationDTO.class);
+
+            invoiceService.updateInvoice(invoiceId, dto, file);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Erreur modification");
+        }
+    }
+
+    // TOGGLE CERTIFICATION (Action rapide)
+    @PatchMapping("/{invoiceId}/certify")
+    public ResponseEntity<?> toggleCertify(@PathVariable Long projectId, @PathVariable Long invoiceId) {
+        invoiceService.toggleCertification(invoiceId);
+        return ResponseEntity.ok().build();
+    }
+
+    // SUPPRESSION FACTURE
+    @DeleteMapping("/{invoiceId}")
+    public ResponseEntity<?> deleteInvoice(@PathVariable Long projectId, @PathVariable Long invoiceId) {
+        invoiceService.deleteInvoice(invoiceId);
+        return ResponseEntity.ok().build();
     }
 }

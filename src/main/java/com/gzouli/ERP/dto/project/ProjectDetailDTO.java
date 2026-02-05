@@ -15,7 +15,9 @@ public class ProjectDetailDTO extends ProjectSummaryDTO {
 
     private List<TeamMemberDTO> teamMembers;
 
+    // Total des recettes théoriques (Somme de toutes les factures)
+    private Double totalInvoicesSubmitted;
     private Double totalInvoicesCertified; // Total Recettes Validées
     private Double totalExpenses;          // Total Dépenses
-    private Double projectMargin;          // Gain (Recettes - Dépenses)
+    private Double currentMargin;          // Gain (Recettes - Dépenses)
 }

@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -70,5 +69,63 @@ public class InvoiceServiceImpl implements InvoiceService {
                     dto.setDownloadUrl(fileStorageService.generatePresignedUrl(inv.getS3Key()));
                     return dto;
                 }).toList();
+    }
+
+    @Override
+    public void updateInvoice(Long invoiceId, InvoiceRegistrationDTO dto, MultipartFile file) {
+        Invoice invoice = invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Facture introuvable"));
+
+        // Mise à jour des champs texte
+        invoice.setInvoiceNumber(dto.getInvoiceNumber());
+        invoice.setSubmissionDate(dto.getSubmissionDate());
+        invoice.setAmount(dto.getAmount());
+        // On ne touche pas à isCertified ici si on veut le gérer à part,
+        // ou bien on le met à jour si le formulaire le permet.
+
+        // Gestion du fichier S3 (Seulement si un nouveau fichier est envoyé)
+        if (file != null && !file.isEmpty()) {
+            // 1. Supprimer l'ancien fichier S3
+            if (invoice.getS3Key() != null) {
+                fileStorageService.deleteFile(invoice.getS3Key());
+            }
+            // 2. Upload du nouveau
+            String newKey = fileStorageService.uploadFile(file, "invoices");
+            invoice.setS3Key(newKey);
+            invoice.setFileName(file.getOriginalFilename());
+        }
+
+        invoiceRepository.save(invoice);
+    }
+
+    @Override
+    public void toggleCertification(Long invoiceId) {
+        Invoice invoice = invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Facture introuvable"));
+
+        // Inversion du booléen
+        invoice.setIsCertified(!invoice.getIsCertified());
+        invoiceRepository.save(invoice);
+    }
+
+    @Override
+    public void deleteInvoice(Long invoiceId) {
+        Invoice invoice = invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Facture introuvable"));
+
+        String s3Key = invoice.getS3Key();
+
+        // Suppression BDD d'abord (Sécurité transactionnelle)
+        invoiceRepository.delete(invoice);
+        invoiceRepository.flush(); // Force l'exécution SQL
+
+        // Suppression S3
+        if (s3Key != null) {
+            try {
+                fileStorageService.deleteFile(s3Key);
+            } catch (Exception e) {
+                System.err.println("Warning: Fichier S3 orphelin " + s3Key);
+            }
+        }
     }
 }
