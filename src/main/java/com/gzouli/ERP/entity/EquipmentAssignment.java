@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -17,31 +17,28 @@ public class EquipmentAssignment {
     private Long id;
 
     @ToString.Exclude
-    @ManyToOne(optional = false) // Un assignment concerne obligatoirement un équipement
+    @ManyToOne(optional = false, fetch = FetchType.LAZY) // Un assignment concerne obligatoirement un équipement
     @JoinColumn(name = "equipment_id")
     private Equipment equipment;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
 
     // --- La période ---
 
     @Column(nullable = false)
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
-    private LocalDateTime endDate; // Si NULL = Toujours actif
+    private LocalDate endDate; // Si NULL = Toujours actif
 
-    // --- Validation pour garantir l'exclusivité ---
-//    @PrePersist
-//    @PreUpdate
-//    private void validate() {
-//        if (project != null && employee != null) {
-//            throw new IllegalStateException("Un équipement ne peut pas être assigné à un projet ET un employé en même temps.");
-//        }
-//        if (project == null && employee == null) {
-//            throw new IllegalStateException("Une assignation doit avoir une cible (Projet ou Employé).");
-//        }
-//    }
+    // Validation pour éviter les dates incohérentes
+    @PrePersist
+    @PreUpdate
+    private void validateDates() {
+        if (endDate != null && startDate.isAfter(endDate)) {
+            throw new IllegalStateException("La date de fin ne peut pas être avant la date de début.");
+        }
+    }
 }
