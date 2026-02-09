@@ -175,8 +175,6 @@ public class EquipmentServiceImpl implements EquipmentService {
         boolean isBusy = e.getAssignments().stream().anyMatch(a -> a.getEndDate() == null);
         dto.setAvailable(!isBusy);
 
-        System.out.println(dto.isAvailable());
-
         return dto;
     }
 
