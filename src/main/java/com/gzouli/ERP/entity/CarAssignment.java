@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,18 +17,18 @@ public class CarAssignment {
     @GeneratedValue
     private Long id;
 
-    @ToString.Exclude
-    @ManyToOne(optional = false) // Un assignment concerne obligatoirement une voiture
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "car_id")
+    @ToString.Exclude
     private Car car;
 
-    @ToString.Exclude
-    @ManyToOne(optional = false) // Un assignment concerne obligatoirement un employee
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "employee_id")
+    @ToString.Exclude
     private Employee employee;
 
     @Column(nullable = false)
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
-    private LocalDateTime endDate; // Si NULL = Toujours actif
+    private LocalDate endDate; // Si NULL = Toujours actif
 }
