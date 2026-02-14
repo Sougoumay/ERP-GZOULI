@@ -19,4 +19,8 @@ public class ExpenseDTO {
     // Info Employé (Pour affichage direct dans le tableau)
     private Long performedById;
     private String performedByName; // Ex: "Hamid ANDJA"
+
+    // Le lien optionnel
+    private Long linkedCarId;       // Pour l'envoi (Front -> Back)
+    private String linkedCarMatricule; // Pour l'affichage (Back -> Front)
 }

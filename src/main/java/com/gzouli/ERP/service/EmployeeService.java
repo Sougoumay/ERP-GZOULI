@@ -3,9 +3,11 @@ package com.gzouli.ERP.service;
 import com.gzouli.ERP.dto.employee.EmployeeDetailDTO;
 import com.gzouli.ERP.dto.employee.EmployeeRegistrationDTO;
 import com.gzouli.ERP.dto.employee.EmployeeSummaryDTO;
+import com.gzouli.ERP.dto.employee.SalaryAdvanceDTO;
 import com.gzouli.ERP.entity.Car;
 import com.gzouli.ERP.entity.Project;
 import com.gzouli.ERP.entity.SalaryAdvance;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -83,16 +85,9 @@ public interface EmployeeService {
      */
     void updateBaseSalary(Long id, Double newSalary);
 
-    /**
-     * Ajoute une avance sur salaire pour un mois donné.
-     * Impactera le calcul de rentabilité des projets (charges).
-     * @param employeeId L'employé concerné.
-     * @param amount Le montant de l'avance.
-     * @param date La date de l'avance (souvent aujourd'hui).
-     * @param notes Commentaire optionnel (motif).
-     * @return L'entité SalaryAdvance créée.
-     */
-    SalaryAdvance addSalaryAdvance(Long employeeId, Double amount, LocalDate date, String notes);
+    SalaryAdvanceDTO addSalaryAdvance(Long employeeId, SalaryAdvanceDTO dto);
+
+    List<SalaryAdvanceDTO> getEmployeeAdvances(Long employeeId);
 
     /**
      * Récupère l'historique des avances sur salaire d'un employé.

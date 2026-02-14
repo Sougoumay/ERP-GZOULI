@@ -3,6 +3,7 @@ package com.gzouli.ERP.controller;
 import com.gzouli.ERP.dto.employee.EmployeeDetailDTO;
 import com.gzouli.ERP.dto.employee.EmployeeRegistrationDTO;
 import com.gzouli.ERP.dto.employee.EmployeeSummaryDTO;
+import com.gzouli.ERP.dto.employee.SalaryAdvanceDTO;
 import com.gzouli.ERP.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +17,14 @@ import java.util.List;
 @PreAuthorize("hasRole('ADMIN')")
 @RestController
 @RequestMapping("/api/admin/employees")
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
 
     @PostMapping
     public ResponseEntity<EmployeeSummaryDTO> createEmployee(@Valid @RequestBody EmployeeRegistrationDTO dto) {
@@ -51,5 +56,19 @@ public class EmployeeController {
         // Appel au service (qui gère Cognito + BDD)
         employeeService.toggleEmployeeStatus(id, active);
         return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
+    @PostMapping("/{id}/advances")
+    public ResponseEntity<?> addAdvance(@PathVariable Long id, @RequestBody SalaryAdvanceDTO dto) {
+        try {
+            return ResponseEntity.ok(employeeService.addSalaryAdvance(id, dto));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/advances")
+    public ResponseEntity<List<SalaryAdvanceDTO>> getAdvances(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.getEmployeeAdvances(id));
     }
 }

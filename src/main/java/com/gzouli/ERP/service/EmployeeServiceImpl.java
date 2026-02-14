@@ -1,9 +1,13 @@
 package com.gzouli.ERP.service;
 
+import com.gzouli.ERP.dao.CarAssignmentRepository;
 import com.gzouli.ERP.dao.EmployeeRepository;
+import com.gzouli.ERP.dao.ProjectRepository;
+import com.gzouli.ERP.dao.SalaryAdvanceRepository;
 import com.gzouli.ERP.dto.employee.EmployeeDetailDTO;
 import com.gzouli.ERP.dto.employee.EmployeeRegistrationDTO;
 import com.gzouli.ERP.dto.employee.EmployeeSummaryDTO;
+import com.gzouli.ERP.dto.employee.SalaryAdvanceDTO;
 import com.gzouli.ERP.entity.Car;
 import com.gzouli.ERP.entity.Employee;
 import com.gzouli.ERP.entity.Project;
@@ -12,16 +16,21 @@ import com.gzouli.ERP.exception.BusinessException;
 import com.gzouli.ERP.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService{
     private final CognitoService cognitoService;
     private final EmployeeRepository employeeRepository;
+    private final SalaryAdvanceRepository advanceRepository;
+    private final ProjectRepository projectRepository;
+    private final CarAssignmentRepository carAssignmentRepository;
 
     @Override
     public EmployeeSummaryDTO createEmployee(EmployeeRegistrationDTO dto) {
@@ -134,7 +143,38 @@ public class EmployeeServiceImpl implements EmployeeService{
         dto.setPhoneNumber(emp.getPhoneNumber());
         dto.setAddress(emp.getAddress());
         dto.setBirthday(emp.getBirthday());
-        // dto.setCurrentCar... (logique véhicule à part)
+
+        // 2. Historique Avances (Déjà implémenté via repo)
+        dto.setAdvances(
+                advanceRepository.findByEmployeeIdOrderByAdvanceDateDesc(id).stream()
+                        .map(this::mapToAdvanceDTO) // Utilisez votre mapper existant
+                        .collect(Collectors.toList())
+        );
+
+        // 3. Historique Véhicules (Via CarAssignment)
+        dto.setVehicles(
+                carAssignmentRepository.findByEmployeeIdOrderByStartDateDesc(id).stream()
+                        .map(assign -> {
+                            EmployeeDetailDTO.CarHistoryDTO carDto = new EmployeeDetailDTO.CarHistoryDTO();
+                            carDto.setCarModel(assign.getCar().getBrand() + " " + assign.getCar().getModel());
+                            carDto.setRegistrationNumber(assign.getCar().getRegistrationNumber());
+                            carDto.setStartDate(assign.getStartDate());
+                            carDto.setEndDate(assign.getEndDate());
+                            return carDto;
+                        }).collect(Collectors.toList())
+        );
+
+        // 4. Historique Projets
+        dto.setProjects(
+                projectRepository.findProjectsByEmployeeId(id).stream()
+                        .map(proj -> {
+                            EmployeeDetailDTO.ProjectHistoryDTO pDto = new EmployeeDetailDTO.ProjectHistoryDTO();
+                            pDto.setProjectId(proj.getId());
+                            pDto.setProjectName(proj.getName());
+                            pDto.setStartDate(proj.getStartDate()); // Date de début du projet à défaut
+                            return pDto;
+                        }).collect(Collectors.toList())
+        );
 
         return dto;
     }
@@ -161,9 +201,42 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     }
 
+    @Transactional
     @Override
-    public SalaryAdvance addSalaryAdvance(Long employeeId, Double amount, LocalDate date, String notes) {
-        return null;
+    public SalaryAdvanceDTO addSalaryAdvance(Long employeeId, SalaryAdvanceDTO dto) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employé introuvable"));
+
+        SalaryAdvance advance = new SalaryAdvance();
+        advance.setEmployee(employee);
+        advance.setAmount(dto.getAmount());
+        advance.setAdvanceDate(dto.getDate());
+        advance.setNote(dto.getNote());
+
+        SalaryAdvance saved = advanceRepository.save(advance);
+        return mapToAdvanceDTO(saved);
+    }
+
+    @Override
+    public List<SalaryAdvanceDTO> getEmployeeAdvances(Long employeeId) {
+        if (!employeeRepository.existsById(employeeId)) {
+            throw new ResourceNotFoundException("Employé introuvable");
+        }
+        // Supposons que vous ayez ajouté la méthode findByEmployeeId dans le repo
+        return advanceRepository.findByEmployeeIdOrderByAdvanceDateDesc(employeeId).stream()
+                .map(this::mapToAdvanceDTO)
+                .collect(Collectors.toList());
+    }
+
+    private SalaryAdvanceDTO mapToAdvanceDTO(SalaryAdvance adv) {
+        SalaryAdvanceDTO dto = new SalaryAdvanceDTO();
+        dto.setId(adv.getId());
+        dto.setEmployeeId(adv.getEmployee().getId());
+        dto.setEmployeeName(adv.getEmployee().getFirstName() + " " + adv.getEmployee().getLastName());
+        dto.setAmount(adv.getAmount());
+        dto.setDate(adv.getAdvanceDate());
+        dto.setNote(adv.getNote());
+        return dto;
     }
 
     @Override

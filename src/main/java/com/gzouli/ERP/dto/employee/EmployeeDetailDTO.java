@@ -25,5 +25,25 @@ public class EmployeeDetailDTO {
     private String currentCarModel;
     private String currentCarPlate;
 
-    private List<String> activeProjectNames;
+    // Les 3 Historiques
+    private List<ProjectHistoryDTO> projects;
+    private List<CarHistoryDTO> vehicles;
+    private List<SalaryAdvanceDTO> advances;
+
+    @Data
+    public static class ProjectHistoryDTO {
+        private Long projectId;
+        private String projectName;
+        private String roleOnProject; // "Chef de mission" ou "Technicien"
+        private LocalDate startDate;
+        // private LocalDate endDate; (si géré)
+    }
+
+    @Data
+    public static class CarHistoryDTO {
+        private String carModel;
+        private String registrationNumber;
+        private LocalDate startDate;
+        private LocalDate endDate; // null si cours
+    }
 }

@@ -42,4 +42,9 @@ public class Expense {
     @JoinColumn(nullable = false)
     @ToString.Exclude
     private Employee performedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Car linkedCar;
+
 }

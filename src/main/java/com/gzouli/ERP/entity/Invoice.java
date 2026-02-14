@@ -21,6 +21,7 @@ public class Invoice {
     @Column(nullable = false)
     private LocalDate submissionDate;
     private Boolean isCertified; // Status approved for payment
+    private LocalDate certificationDate;
 
     @Column(nullable = false)
     private Double amount;
