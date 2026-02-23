@@ -28,7 +28,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     boolean existsByIdCardNumber(String idCardNumber);
 
-//    List<Employee> findAll();
+    List<Employee> findByRoleNot(Role role);
 
 
 
