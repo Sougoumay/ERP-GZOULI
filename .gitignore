@@ -34,3 +34,7 @@ build/
 
 
 **.env
+
+
+### Ignorer les fichiers de OWASP
+.dependency-check-data
