@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+  security:
+    oauth2:
+          resourceserver:
+            jwt:
+              enabled: false
+
+
+aws:
+  accessKeyId: test
+  secretAccessKey: test
+  region: eu-west-1
+  s3:
+    bucketName: test-bucket
+  cognito:
+    userPoolId: test-userpool

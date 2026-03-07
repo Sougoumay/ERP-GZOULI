@@ -1,0 +1,39 @@
+stages:
+  - build
+  - test
+#  - sonar
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  key: maven
+  paths:
+    - .m2/repository
+
+build:
+  stage: build
+  image: maven:3.9-eclipse-temurin-17
+  tags:
+    - gzouli
+  script:
+    - mvn clean compile
+
+test:
+  stage: test
+  image: maven:3.9-eclipse-temurin-17
+  tags:
+    - gzouli
+  script:
+    - mvn test
+
+#sonar:
+#  stage: sonar
+#  image: maven:3.9-eclipse-temurin-17
+#  tags:
+#    - gzouli
+#  script:
+#    - mvn verify sonar:sonar \
+#      -Dsonar.projectKey=my-spring-app \
+#      -Dsonar.host.url=http://sonarqube:9000 \
+#      -Dsonar.login=$SONAR_TOKEN

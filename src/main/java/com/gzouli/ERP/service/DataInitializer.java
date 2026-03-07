@@ -5,10 +5,12 @@ import com.gzouli.ERP.dto.employee.EmployeeRegistrationDTO;
 import com.gzouli.ERP.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Profile("!test")
 public class DataInitializer implements CommandLineRunner {
 
     private final EmployeeService employeeService;
