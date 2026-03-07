@@ -36,13 +36,15 @@ public class ProjectServiceImpl implements ProjectService {
         // 2. Mapping DTO -> Entity
         Project project = new Project();
         project.setName(dto.getName());
+        project.setOwner(dto.getProjectOwner());
         project.setDescription(dto.getDescription());
         project.setGeneralObjectives(dto.getGeneralObjectives());
         project.setSpecificObjectives(dto.getSpecificObjectives());
-        project.setAmountIncTax(dto.getAmountIncTax());
+        project.setAmountIncTax(dto.getAmountExTax()*1.25);
         project.setAmountExTax(dto.getAmountExTax());
         project.setDurationMonths(dto.getDurationMonths());
         project.setStartDate(dto.getStartDate());
+        project.setWinDate(dto.getProjectWinDate());
         project.setActive(true); // Actif par défaut
 
         Project saved = projectRepository.save(project);
@@ -56,13 +58,17 @@ public class ProjectServiceImpl implements ProjectService {
 
         // Mise à jour partielle (seulement si le champ n'est pas null)
         if (dto.getName() != null) project.setName(dto.getName());
+        if (dto.getProjectOwner() != null) project.setOwner(dto.getProjectOwner());
         if (dto.getDescription() != null) project.setDescription(dto.getDescription());
-        if (dto.getAmountIncTax() != null) project.setAmountIncTax(dto.getAmountIncTax());
-        if (dto.getAmountExTax() != null) project.setAmountExTax(dto.getAmountExTax());
+        if (dto.getAmountExTax() != null) {
+            project.setAmountExTax(dto.getAmountExTax());
+            project.setAmountIncTax(dto.getAmountExTax()*1.25);
+        }
         if (dto.getDurationMonths() != null) project.setDurationMonths(dto.getDurationMonths());
         if (dto.getGeneralObjectives() != null) project.setGeneralObjectives(dto.getGeneralObjectives());
         if (dto.getSpecificObjectives() != null) project.setSpecificObjectives(dto.getSpecificObjectives());
         if (dto.getStartDate() != null) project.setStartDate(dto.getStartDate());
+        if (dto.getProjectWinDate() != null) project.setWinDate(dto.getProjectWinDate());
 
         Project updated = projectRepository.save(project);
         return mapToSummary(updated);
@@ -140,8 +146,6 @@ public class ProjectServiceImpl implements ProjectService {
             if (!currentTeam.contains(emp)) {
                 currentTeam.add(emp);
             }
-
-//            }
         }
         project.setSupervisors(currentTeam);
 
@@ -189,6 +193,7 @@ public class ProjectServiceImpl implements ProjectService {
         ProjectSummaryDTO dto = new ProjectSummaryDTO();
         dto.setId(p.getId());
         dto.setName(p.getName());
+        dto.setProjectOwner(p.getOwner());
         dto.setDescription(p.getDescription());
         dto.setGeneralObjectives(p.getGeneralObjectives());
         dto.setSpecificObjectives(p.getSpecificObjectives());
@@ -196,6 +201,7 @@ public class ProjectServiceImpl implements ProjectService {
         dto.setAmountExTax(p.getAmountExTax());
         dto.setDurationMonths(p.getDurationMonths());
         dto.setStartDate(p.getStartDate());
+        dto.setProjectWinDate(p.getWinDate());
         dto.setActive(p.isActive());
         return dto;
     }
@@ -205,10 +211,12 @@ public class ProjectServiceImpl implements ProjectService {
         // Copie des champs Summary
         dto.setId(p.getId());
         dto.setName(p.getName());
+        dto.setProjectOwner(p.getOwner());
         dto.setDescription(p.getDescription());
-        dto.setAmountIncTax(p.getAmountIncTax());
+        dto.setAmountIncTax(p.getAmountExTax());
         dto.setDurationMonths(p.getDurationMonths());
         dto.setStartDate(p.getStartDate());
+        dto.setProjectWinDate(p.getWinDate());
         dto.setActive(p.isActive());
 
         // Champs Détails

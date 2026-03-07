@@ -18,6 +18,7 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String owner;
     private String name;
     private String description; // Objet du marché
     @Column(columnDefinition = "TEXT")
@@ -29,6 +30,7 @@ public class Project {
     private Integer durationMonths;
     private boolean active;
     private LocalDate startDate;
+    private LocalDate winDate;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "project")

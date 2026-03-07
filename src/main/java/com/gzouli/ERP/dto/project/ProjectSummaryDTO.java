@@ -11,6 +11,10 @@ import java.time.LocalDate;
 public class ProjectSummaryDTO {
     private Long id; // Optionnel (null à la création)
 
+    @NotBlank(message = "Le nom du maitre d'ouvrage du projet est obligatoire")
+    @Size(max = 255, message = "Le nom du maitre d'ouvrage ne doit pas dépasser 255 caractères")
+    private String projectOwner;
+
     @NotBlank(message = "L'intitulé du projet est obligatoire")
     @Size(max = 255, message = "Le nom ne doit pas dépasser 255 caractères")
     private String name;
@@ -23,7 +27,6 @@ public class ProjectSummaryDTO {
 
     private String specificObjectives; // Ajouté comme demandé
 
-    @NotNull(message = "Le montant TTC est obligatoire")
     @PositiveOrZero(message = "Le montant ne peut pas être négatif")
     private Double amountIncTax;
 
@@ -35,6 +38,8 @@ public class ProjectSummaryDTO {
 
     @NotNull(message = "La date de démarrage est obligatoire")
     private LocalDate startDate;
+
+    private LocalDate projectWinDate;
 
     @NotNull(message = "Le délai est obligatoire")
     @Min(value = 1, message = "Le délai doit être d'au moins 1 mois")

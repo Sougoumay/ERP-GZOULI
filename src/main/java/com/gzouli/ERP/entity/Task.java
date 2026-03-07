@@ -17,6 +17,9 @@ public class Task {
     private String label;
     private Boolean isCompleted;
     private LocalDate completionDate;
+    private Float weight;
+    private LocalDate startDate;
+    private LocalDate scheduledEndDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id") // Lien vers le projet

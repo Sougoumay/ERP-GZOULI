@@ -45,6 +45,9 @@ public class TaskServiceImpl implements TaskService {
 
         Task task = new Task();
         task.setLabel(dto.getLabel());
+        task.setWeight(dto.getTaskWeight());
+        task.setStartDate(dto.getStartDate());
+        task.setScheduledEndDate(dto.getScheduledEndDate());
         task.setProject(project);
         task.setIsCompleted(false); // Par défaut
 
@@ -71,6 +74,9 @@ public class TaskServiceImpl implements TaskService {
 
         // Mise à jour du libellé
         task.setLabel(dto.getLabel());
+        task.setWeight(dto.getTaskWeight());
+        task.setStartDate(dto.getStartDate());
+        task.setScheduledEndDate(dto.getScheduledEndDate());
 
         // Mise à jour de l'assignation
         if (dto.getAssigneeId() != null) {
@@ -114,11 +120,19 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public double getProjectProgress(Long projectId) {
-        long total = taskRepository.countByProjectId(projectId);
-        if (total == 0) return 0.0;
+        // 1. On récupère la somme totale des poids prévus pour ce projet
+        double totalWeight = taskRepository.sumWeightsByProjectId(projectId);
 
-        long completed = taskRepository.countByProjectIdAndIsCompletedTrue(projectId);
-        return (double) completed / total * 100.0;
+        // Sécurité : Éviter la division par zéro s'il n'y a pas encore de tâches
+        if (totalWeight == 0.0) {
+            return 0.0;
+        }
+
+        // 2. On récupère la somme des poids des tâches terminées
+        double completedWeight = taskRepository.sumCompletedWeightsByProjectId(projectId);
+
+        // 3. Calcul du pourcentage d'avancement
+        return (completedWeight / totalWeight) * 100.0;
     }
 
     // --- Mapper ---
@@ -126,6 +140,9 @@ public class TaskServiceImpl implements TaskService {
         TaskDTO dto = new TaskDTO();
         dto.setId(t.getId());
         dto.setLabel(t.getLabel());
+        if(t.getWeight() != null) dto.setTaskWeight(t.getWeight());
+        dto.setStartDate(t.getStartDate());
+        dto.setScheduledEndDate(t.getScheduledEndDate());
         dto.setCompleted(Boolean.TRUE.equals(t.getIsCompleted()));
         dto.setCompletionDate(t.getCompletionDate());
 

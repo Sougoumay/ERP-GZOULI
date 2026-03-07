@@ -11,6 +11,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class ProjectRegistrationDTO {
+    @NotBlank(message = "Le nom du maitre d'ouvrage du projet est obligatoire")
+    private String projectOwner;
+
     @NotBlank(message = "Le nom du projet est obligatoire")
     private String name;
 
@@ -34,4 +37,6 @@ public class ProjectRegistrationDTO {
 
     @NotNull(message = "La date de début est obligatoire")
     private LocalDate startDate;
+
+    private LocalDate projectWinDate;
 }
