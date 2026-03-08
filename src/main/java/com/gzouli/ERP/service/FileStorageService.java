@@ -6,7 +6,11 @@ public interface FileStorageService {
 
     String uploadFile(MultipartFile file, String path);
 
+    void confirmFile(String key);
+
     void deleteFile(String key);
 
     String generatePresignedUrl(String key);
+
+    String generateUploadUrl(String key, String contentType);
 }

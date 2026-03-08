@@ -10,5 +10,7 @@ public class ExpenseRegistrationDTO {
     private String label;           // Description (ex: "Vidange Ford")
     private Double amount;          // Montant TTC
     private LocalDate expenseDate;  // Date de la dépense
+    private String fileKey;
+    private String fileName;
     private Long employeeId;        // ID de l'employé qui a effectué la dépense
 }

@@ -29,42 +29,30 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     @Transactional
-    public void addExpense(Long projectId, ExpenseRegistrationDTO dto, MultipartFile file) {
-        String s3Key = null;
-        try {
-            // 1. Upload S3 (Hors transaction BDD)
-            s3Key = fileStorageService.uploadFile(file, "expenses");
+    public void addExpense(Long projectId, ExpenseRegistrationDTO dto) {
 
-            // 2. Récupération des entités liées
-            Project project = projectRepository.findById(projectId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Projet introuvable"));
+        // 1. Récupération des entités liées
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Projet introuvable"));
 
-            Employee employee = employeeRepository.findById(dto.getEmployeeId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Employé introuvable"));
+        Employee employee = employeeRepository.findById(dto.getEmployeeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Employé introuvable"));
 
-            // 3. Création de la dépense
-            Expense expense = new Expense();
-            expense.setProject(project);
-            expense.setPerformedBy(employee); // Qui a payé ?
+        // 2. Création de la dépense
+        Expense expense = new Expense();
+        expense.setProject(project);
+        expense.setPerformedBy(employee); // Qui a payé ?
 
-            expense.setType(dto.getType());
-            expense.setLabel(dto.getLabel());
-            expense.setAmount(dto.getAmount());
-            expense.setExpenseDate(dto.getExpenseDate());
+        expense.setType(dto.getType());
+        expense.setLabel(dto.getLabel());
+        expense.setAmount(dto.getAmount());
+        expense.setExpenseDate(dto.getExpenseDate());
 
-            // Lien S3
-            expense.setS3Key(s3Key);
-            expense.setFileName(file.getOriginalFilename());
+        // Lien S3
+        expense.setS3Key(dto.getFileKey());
+        expense.setFileName(dto.getFileName());
 
-            expenseRepository.save(expense);
-
-        } catch (Exception e) {
-            // ROLLBACK MANUEL : Si la BDD plante, on efface le fichier S3
-            if (s3Key != null) {
-                fileStorageService.deleteFile(s3Key);
-            }
-            throw new RuntimeException("Erreur lors de l'enregistrement de la dépense", e);
-        }
+        expenseRepository.save(expense);
     }
 
     @Override

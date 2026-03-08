@@ -24,30 +24,19 @@ public class ExpenseController {
      * AJOUT D'UNE DÉPENSE (Multipart)
      * Reçoit le JSON sous forme de String ("expense") et le fichier binaire ("file")
      */
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping("")
     public ResponseEntity<?> addExpense(
             @PathVariable Long projectId,
-            @RequestPart("expense") String expenseJson,
-            @RequestPart("file") MultipartFile file
+            @RequestBody ExpenseRegistrationDTO dto // Plus de RequestPart ou MultipartFile !
     ) {
         try {
-            // Conversion manuelle du JSON String en Objet Java
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule()); // Gestion des dates Java 8
+            // Le DTO contient maintenant toutes les infos + le chemin S3 (fileKey)
+            expenseService.addExpense(projectId, dto);
+            return ResponseEntity.ok().build();
 
-            ExpenseRegistrationDTO dto = mapper.readValue(expenseJson, ExpenseRegistrationDTO.class);
-
-            // Appel service
-            expenseService.addExpense(projectId, dto, file);
-
-            return ResponseEntity.ok().build(); // 200 OK
-
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body("Format de données invalide (Date ou Montant incorrects).");
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body("Erreur technique lors de l'enregistrement.");
+            return ResponseEntity.internalServerError().body("Erreur technique");
         }
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ExpenseService {
     // Ajout avec fichier justificatif
-    void addExpense(Long projectId, ExpenseRegistrationDTO dto, MultipartFile file);
+    void addExpense(Long projectId, ExpenseRegistrationDTO dto);
 
     // Liste pour un projet spécifique
     List<ExpenseDTO> getExpensesByProject(Long projectId);
