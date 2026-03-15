@@ -43,7 +43,7 @@ public class InvoiceController {
         return ResponseEntity.ok(invoiceService.getInvoicesByProject(projectId));
     }
 
-    @PutMapping(value = "/{invoiceId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/{invoiceId}")
     public ResponseEntity<?> updateInvoice(
             @PathVariable Long projectId,
             @PathVariable Long invoiceId,
