@@ -22,17 +22,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final FileStorageService fileStorageService;
 
+    @Transactional
     @Override
-    public void addInvoiceToProject(Long projectId, InvoiceRegistrationDTO dto, MultipartFile file) {
-        String s3Key = null;
+    public void addInvoiceToProject(Long projectId, InvoiceRegistrationDTO dto) {
 
-        try {
-            // 1. Upload S3 (Hors Transaction)
-            s3Key = fileStorageService.uploadFile(file, "invoices");
-
-            System.out.println("La clé unique de l'objet est " + s3Key);
-
-            // 2. Save BDD
+            // 1. Save BDD
             Project project = projectRepository.findById(projectId)
                     .orElseThrow(() -> new ResourceNotFoundException("Projet introuvable"));
 
@@ -42,16 +36,12 @@ public class InvoiceServiceImpl implements InvoiceService {
             invoice.setAmount(dto.getAmount());
             invoice.setIsCertified(dto.getIsCertified());
             invoice.setProject(project);
-            invoice.setS3Key(s3Key);
-            invoice.setFileName(file.getOriginalFilename());
+            invoice.setS3Key(dto.getFileKey());
+            invoice.setFileName(dto.getFileName());
 
             invoiceRepository.save(invoice);
 
-        } catch (Exception e) {
-            // 3. Rollback Manuel S3 si erreur
-            if (s3Key != null) fileStorageService.deleteFile(s3Key);
-            throw new RuntimeException("Erreur enregistrement facture", e);
-        }
+            fileStorageService.confirmFile(dto.getFileKey());
     }
 
     @Override
@@ -72,7 +62,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public void updateInvoice(Long invoiceId, InvoiceRegistrationDTO dto, MultipartFile file) {
+    public void updateInvoice(Long invoiceId, InvoiceRegistrationDTO dto) {
         Invoice invoice = invoiceRepository.findById(invoiceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Facture introuvable"));
 
@@ -80,19 +70,15 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setInvoiceNumber(dto.getInvoiceNumber());
         invoice.setSubmissionDate(dto.getSubmissionDate());
         invoice.setAmount(dto.getAmount());
-        // On ne touche pas à isCertified ici si on veut le gérer à part,
-        // ou bien on le met à jour si le formulaire le permet.
 
-        // Gestion du fichier S3 (Seulement si un nouveau fichier est envoyé)
-        if (file != null && !file.isEmpty()) {
-            // 1. Supprimer l'ancien fichier S3
-            if (invoice.getS3Key() != null) {
-                fileStorageService.deleteFile(invoice.getS3Key());
-            }
-            // 2. Upload du nouveau
-            String newKey = fileStorageService.uploadFile(file, "invoices");
-            invoice.setS3Key(newKey);
-            invoice.setFileName(file.getOriginalFilename());
+
+        if(!dto.getFileKey().isEmpty() && !dto.getFileKey().isBlank()) {
+            fileStorageService.deleteFile(invoice.getS3Key());
+            invoice.setS3Key(dto.getFileKey());
+            invoice.setFileName(dto.getFileName());
+
+            invoiceRepository.save(invoice);
+            fileStorageService.confirmFile(dto.getFileKey());
         }
 
         invoiceRepository.save(invoice);

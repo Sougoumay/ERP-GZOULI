@@ -53,6 +53,8 @@ public class ExpenseServiceImpl implements ExpenseService {
         expense.setFileName(dto.getFileName());
 
         expenseRepository.save(expense);
+
+        fileStorageService.confirmFile(dto.getFileKey());
     }
 
     @Override

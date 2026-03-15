@@ -2,8 +2,6 @@ package com.gzouli.ERP.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -11,10 +9,7 @@ import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignReques
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
-import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDate;
-import java.util.UUID;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService{
@@ -28,35 +23,6 @@ public class FileStorageServiceImpl implements FileStorageService{
     public FileStorageServiceImpl(S3Client s3Client, S3Presigner s3Presigner) {
         this.s3Client = s3Client;
         this.s3Presigner = s3Presigner;
-    }
-
-    @Override
-    public String uploadFile(MultipartFile file, String path) {
-        // Générer un nom unique pour éviter les conflits (ex: uuid_facture.pdf)
-        String key =
-                path + "/"
-                        + LocalDate.now().getYear() + "/"
-                        + LocalDate.now().getMonth() + "/"
-                        + UUID.randomUUID() + "_" + file.getOriginalFilename();
-
-        System.out.println("Key dans upload file \n " + key);
-
-        System.out.println("Le nom du bucket est : " + bucketName);
-
-
-        try {
-            PutObjectRequest putOb = PutObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(key)
-                    .contentType(file.getContentType())
-                    .build();
-
-            s3Client.putObject(putOb, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-
-            return key; // On retourne la clé pour la stocker en BDD
-        } catch (IOException e) {
-            throw new RuntimeException("Erreur lors de l'upload S3", e);
-        }
     }
 
     @Override

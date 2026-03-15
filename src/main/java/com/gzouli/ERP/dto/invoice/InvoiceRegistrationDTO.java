@@ -10,4 +10,6 @@ public class InvoiceRegistrationDTO {
     private LocalDate submissionDate;
     private Double amount;
     private Boolean isCertified;
+    private String fileKey;
+    private String fileName;
 }

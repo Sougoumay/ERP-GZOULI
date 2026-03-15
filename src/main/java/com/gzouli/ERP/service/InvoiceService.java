@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface InvoiceService {
 
-    void addInvoiceToProject(Long projectId, InvoiceRegistrationDTO dto, MultipartFile file);
+    void addInvoiceToProject(Long projectId, InvoiceRegistrationDTO dto);
 
     List<InvoiceDTO> getInvoicesByProject(Long projectId);
 
-    void updateInvoice(Long invoiceId, InvoiceRegistrationDTO dto, MultipartFile file);
+    void updateInvoice(Long invoiceId, InvoiceRegistrationDTO dto);
 
     void toggleCertification(Long invoiceId);
 

@@ -22,31 +22,16 @@ public class InvoiceController {
 
     private final InvoiceService invoiceService;
 
-    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     public ResponseEntity<?> addInvoice(
             @PathVariable Long projectId,
-            @RequestPart("invoice") String invoiceJson, // Le DTO en String JSON
-            @RequestPart("file") MultipartFile file     // Le fichier PDF
+            @RequestBody InvoiceRegistrationDTO dto    // Le fichier PDF
     ) {
 
         try {
-            // Conversion manuelle du String JSON en Objet Java
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule()); // Pour gérer LocalDate
-            InvoiceRegistrationDTO dto = objectMapper.readValue(invoiceJson, InvoiceRegistrationDTO.class);
-
-            System.out.println("Le service d'ajout des factures est appelés");
-            invoiceService.addInvoiceToProject(projectId, dto, file);
-
+            invoiceService.addInvoiceToProject(projectId, dto);
             return ResponseEntity.ok().build();
-        } catch (JsonProcessingException e) {
-            // Cas 1 : Le JSON envoyé par le front est invalide (ex: date mal formatée, virgule manquante)
-            e.printStackTrace(); // Log pour le développeur
-            return ResponseEntity.badRequest()
-                    .body("Erreur de format : Les données de la facture sont invalides."); // 400 Bad Request
-
         } catch (Exception e) {
-            // Cas 2 : Erreur serveur générale (ex: S3 ne répond pas, BDD plantée)
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erreur technique lors de l'enregistrement de la facture."); // 500 Internal Server Error
@@ -62,18 +47,13 @@ public class InvoiceController {
     public ResponseEntity<?> updateInvoice(
             @PathVariable Long projectId,
             @PathVariable Long invoiceId,
-            @RequestPart("invoice") String invoiceJson,
-            @RequestPart(value = "file", required = false) MultipartFile file // Fichier optionnel en update
+            @RequestBody InvoiceRegistrationDTO dto
     ) {
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-            InvoiceRegistrationDTO dto = mapper.readValue(invoiceJson, InvoiceRegistrationDTO.class);
-
-            invoiceService.updateInvoice(invoiceId, dto, file);
+            invoiceService.updateInvoice(invoiceId, dto);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Erreur modification");
+            return ResponseEntity.internalServerError().body("Erreur lors de la modification");
         }
     }
 
