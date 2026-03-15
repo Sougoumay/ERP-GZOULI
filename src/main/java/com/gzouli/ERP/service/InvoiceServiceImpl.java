@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -71,6 +72,9 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setSubmissionDate(dto.getSubmissionDate());
         invoice.setAmount(dto.getAmount());
 
+        if(!invoice.getIsCertified() && dto.getIsCertified()) {
+            invoice.setSubmissionDate(LocalDate.now());
+        }
 
         if(!dto.getFileKey().isEmpty() && !dto.getFileKey().isBlank()) {
             fileStorageService.deleteFile(invoice.getS3Key());
@@ -84,10 +88,15 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceRepository.save(invoice);
     }
 
+    @Transactional
     @Override
     public void toggleCertification(Long invoiceId) {
         Invoice invoice = invoiceRepository.findById(invoiceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Facture introuvable"));
+
+        if(!invoice.getIsCertified()) {
+            invoice.setCertificationDate(LocalDate.now());
+        }
 
         // Inversion du booléen
         invoice.setIsCertified(!invoice.getIsCertified());
