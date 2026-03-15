@@ -30,6 +30,9 @@
 		<java.version>17</java.version>
 		<log4j2.version>2.25.3</log4j2.version>
 	</properties>
+<!--	<configuration>-->
+<!--		<nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>-->
+<!--	</configuration>-->
 	<dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -181,6 +184,8 @@
 						<format>HTML</format>
 						<format>XML</format>
 					</formats>
+					<nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+					<ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
 				</configuration>
 			</plugin>
 		</plugins>
