@@ -1,7 +1,7 @@
 stages:
   - build
   - test
-#  - sonar
+  - sonar
 
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
@@ -27,13 +27,13 @@ test:
   script:
     - mvn test
 
-#sonar:
-#  stage: sonar
-#  image: maven:3.9-eclipse-temurin-17
-#  tags:
-#    - gzouli
-#  script:
-#    - mvn verify sonar:sonar \
-#      -Dsonar.projectKey=my-spring-app \
-#      -Dsonar.host.url=http://sonarqube:9000 \
-#      -Dsonar.login=$SONAR_TOKEN
+sonar:
+  stage: sonar
+  image: maven:3.9-eclipse-temurin-17
+  tags:
+    - gzouli
+  script:
+    - mvn verify sonar:sonar \
+      -Dsonar.projectKey=GZOULI-BACK \
+      -Dsonar.host.url=http://sonarqube:9000 \
+      -Dsonar.login=$SONAR_TOKEN
