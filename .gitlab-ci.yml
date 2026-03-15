@@ -33,7 +33,4 @@ sonar:
   tags:
     - gzouli
   script:
-    - mvn verify sonar:sonar \
-      -Dsonar.projectKey=GZOULI-BACK \
-      -Dsonar.host.url=http://sonarqube:9000 \
-      -Dsonar.login=$SONAR_TOKEN
+    - mvn verify sonar:sonar -Dsonar.projectKey=GZOULI-BACK -Dsonar.host.url=http://sonarqube:9000 -Dsonar.login=$SONAR_TOKEN
