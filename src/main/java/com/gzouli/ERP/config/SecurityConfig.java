@@ -72,6 +72,7 @@ public class SecurityConfig {
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
 
+        converter.setPrincipalClaimName("email");
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
             // Par défaut Spring cherche "SCOPE_" ou "SCP_", on veut lire "cognito:groups"
             List<String> groups = jwt.getClaimAsStringList("cognito:groups");
