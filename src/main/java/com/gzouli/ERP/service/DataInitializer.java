@@ -8,6 +8,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.util.logging.Logger;
+
 @Component
 @RequiredArgsConstructor
 @Profile("!test")
@@ -21,15 +23,19 @@ public class DataInitializer implements CommandLineRunner {
 
         // On vérifie si l'admin existe déjà pour ne pas le recréer à chaque redémarrage
         if (!employeeService.isEmailExist(adminEmail)) {
-            System.out.println("Création automatique de l'Administrateur Principal...");
+           try {
+               System.out.println("Création automatique de l'Administrateur Principal...");
 
-            EmployeeRegistrationDTO adminDto = getEmployeeRegistrationDTO(adminEmail);
+               EmployeeRegistrationDTO adminDto = getEmployeeRegistrationDTO(adminEmail);
 
-            // Appel du service que nous avons codé ensemble :
-            // Il va créer le user dans Cognito ET dans la BDD locale
-            employeeService.createEmployee(adminDto);
+               // Appel du service que nous avons codé ensemble :
+               // Il va créer le user dans Cognito ET dans la BDD locale
+               employeeService.createEmployee(adminDto);
 
-            System.out.println("Admin créé avec succès. Mot de passe temporaire : Default$$$123");
+               System.out.println("Admin créé avec succès. Mot de passe temporaire : Default$$$123");
+           } catch (Exception e) {
+               System.out.println("Une erreur s'est produit lors de la création de l'utilisateur");
+           }
         }
     }
 

@@ -9,10 +9,17 @@ services:
     environment:
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - SPRING_PROFILES_ACTIVE=dev
+      - DB_USER=${GZOULI_DB_USER}
+      - DB_PASSWORD=${GZOULI_DB_PASSWORD}
+      - DB_NAME=${GZOULI_DB_NAME}
+      - SPRING_PROFILES_ACTIVE=docker
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_COGNITO_USER_POOL_ID=${AWS_COGNITO_USER_POOL_ID}
+      - AWS_COGNITO_APP_CLIENT_ID=${AWS_COGNITO_APP_CLIENT_ID}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - NVD_API_KEY=${NVD_API_KEY}
     depends_on:
       db :
         condition: service_healthy
@@ -24,9 +31,9 @@ services:
     container_name: bdd-container
     restart: always
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${GZOULI_DB_NAME}
+      POSTGRES_USER: ${GZOULI_DB_USER}
+      POSTGRES_PASSWORD: ${GZOULI_DB_PASSWORD}
     ports:
       - "5432:5432"
     healthcheck:
