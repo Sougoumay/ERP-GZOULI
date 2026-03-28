@@ -27,14 +27,14 @@ public class ProjectMissionOrderController {
 
     @GetMapping
     public ResponseEntity<List<ProjectMissionOrderResponseDTO>> getProjectMissionOrders(
-            @PathVariable Long projectId) {
+            @PathVariable("projectId") Long projectId) {
         return ResponseEntity.ok(projectMissionOrderService.getOrdersByProject(projectId));
     }
 
     @PutMapping("/{orderId}")
     public ResponseEntity<ProjectMissionOrderResponseDTO> updateOrder(
-            @PathVariable Long projectId,
-            @PathVariable Long orderId,
+            @PathVariable("projectId") Long projectId,
+            @PathVariable("orderId") Long orderId,
             @RequestBody ProjectMissionOrderRequestDTO dto) {
         // (Optionnel) Vous pouvez vérifier ici que orderId appartient bien à projectId
         return ResponseEntity.ok(projectMissionOrderService.updateOrder(orderId, dto));
@@ -42,8 +42,8 @@ public class ProjectMissionOrderController {
 
     @DeleteMapping("/{orderId}")
     public ResponseEntity<Void> deleteOrder(
-            @PathVariable Long projectId,
-            @PathVariable Long orderId) {
+            @PathVariable("projectId") Long projectId,
+            @PathVariable("orderId") Long orderId) {
         projectMissionOrderService.deleteOrder(orderId);
         return ResponseEntity.noContent().build();
     }

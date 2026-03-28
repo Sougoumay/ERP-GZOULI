@@ -33,7 +33,7 @@ public class ProjectTaskController {
     // 2. Créer une tâche
     @PostMapping
     public ResponseEntity<?> createTask(
-            @PathVariable Long projectId,
+            @PathVariable("projectId") Long projectId,
             @RequestBody @Valid TaskCreationDTO dto) {
         try {
             TaskDTO created = taskService.createTask(projectId, dto);
@@ -46,8 +46,8 @@ public class ProjectTaskController {
     // 3. Modifier une tâche (Label ou Assigné)
     @PutMapping("/{taskId}")
     public ResponseEntity<?> updateTask(
-            @PathVariable Long projectId,
-            @PathVariable Long taskId,
+            @PathVariable("projectId") Long projectId,
+            @PathVariable("taskId") Long taskId,
             @RequestBody @Valid TaskCreationDTO dto) {
         try {
             return ResponseEntity.ok(taskService.updateTask(taskId, dto));
@@ -58,20 +58,20 @@ public class ProjectTaskController {
 
     // 4. Action rapide : Check / Uncheck (Terminer tâche)
     @PatchMapping("/{taskId}/toggle")
-    public ResponseEntity<TaskDTO> toggleTask(@PathVariable Long projectId, @PathVariable Long taskId) {
+    public ResponseEntity<TaskDTO> toggleTask(@PathVariable("projectId") Long projectId, @PathVariable("taskId") Long taskId) {
         return ResponseEntity.ok(taskService.toggleTaskStatus(taskId));
     }
 
     // 5. Supprimer une tâche
     @DeleteMapping("/{taskId}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long projectId, @PathVariable Long taskId) {
+    public ResponseEntity<Void> deleteTask(@PathVariable("projectId") Long projectId, @PathVariable("taskId") Long taskId) {
         taskService.deleteTask(taskId);
         return ResponseEntity.noContent().build();
     }
 
     // 6. Bonus : Obtenir le % d'avancement global
     @GetMapping("/progress")
-    public ResponseEntity<Map<String, Double>> getProgress(@PathVariable Long projectId) {
+    public ResponseEntity<Map<String, Double>> getProgress(@PathVariable("projectId") Long projectId) {
         double progress = taskService.getProjectProgress(projectId);
         Map<String, Double> response = new HashMap<>();
         response.put("progress", progress);

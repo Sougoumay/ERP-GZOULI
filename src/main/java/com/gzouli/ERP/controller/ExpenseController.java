@@ -26,7 +26,7 @@ public class ExpenseController {
      */
     @PostMapping("")
     public ResponseEntity<?> addExpense(
-            @PathVariable Long projectId,
+            @PathVariable("projectId") Long projectId,
             @RequestBody ExpenseRegistrationDTO dto // Plus de RequestPart ou MultipartFile !
     ) {
         try {
@@ -44,7 +44,7 @@ public class ExpenseController {
      * LISTE DES DÉPENSES DU PROJET
      */
     @GetMapping
-    public ResponseEntity<List<ExpenseDTO>> getProjectExpenses(@PathVariable Long projectId) {
+    public ResponseEntity<List<ExpenseDTO>> getProjectExpenses(@PathVariable("projectId") Long projectId) {
         return ResponseEntity.ok(expenseService.getExpensesByProject(projectId));
     }
 
@@ -54,7 +54,7 @@ public class ExpenseController {
      * Note: projectId n'est pas utilisé ici mais gardé pour la cohérence de l'URL
      */
     @DeleteMapping("/{expenseId}")
-    public ResponseEntity<?> deleteExpense(@PathVariable Long projectId, @PathVariable Long expenseId) {
+    public ResponseEntity<?> deleteExpense(@PathVariable("projectId") Long projectId, @PathVariable("expenseId") Long expenseId) {
         try {
             expenseService.deleteExpense(expenseId);
             return ResponseEntity.noContent().build(); // 204 No Content

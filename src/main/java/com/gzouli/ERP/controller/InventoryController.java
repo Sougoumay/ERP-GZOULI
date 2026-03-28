@@ -60,7 +60,7 @@ public class InventoryController {
      * Status: 200 OK
      */
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateItem(@PathVariable Long id, @RequestBody EquipmentDTO dto) {
+    public ResponseEntity<?> updateItem(@PathVariable("id") Long id, @RequestBody EquipmentDTO dto) {
         try {
             return ResponseEntity.ok(equipmentService.updateEquipment(id, dto));
         } catch (BusinessException e) {
@@ -74,7 +74,7 @@ public class InventoryController {
      * ou 400 BAD REQUEST si BusinessException
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteItem(@PathVariable Long id) {
+    public ResponseEntity<?> deleteItem(@PathVariable("id") Long id) {
         try {
             equipmentService.deleteEquipment(id);
             return ResponseEntity.noContent().build();

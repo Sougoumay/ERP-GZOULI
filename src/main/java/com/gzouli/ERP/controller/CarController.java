@@ -51,7 +51,7 @@ public class CarController {
     // 4. Libérer un véhicule (Récupération des clés)
     @PatchMapping("/{carId}/release")
     public ResponseEntity<?> releaseCar(
-            @PathVariable Long carId,
+            @PathVariable("carId") Long carId,
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate) {
         try {
             carService.releaseCar(carId, returnDate);
@@ -62,7 +62,7 @@ public class CarController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCar(@PathVariable Long id, @RequestBody CarDTO dto) {
+    public ResponseEntity<?> updateCar(@PathVariable("id") Long id, @RequestBody CarDTO dto) {
         try {
             return ResponseEntity.ok(carService.updateCar(id, dto));
         } catch (BusinessException e) {
@@ -72,7 +72,7 @@ public class CarController {
 
     // 6. Supprimer un véhicule
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCar(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCar(@PathVariable("id") Long id) {
         try {
             carService.deleteCar(id);
             return ResponseEntity.noContent().build();

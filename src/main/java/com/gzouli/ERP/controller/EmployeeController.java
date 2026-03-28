@@ -38,12 +38,12 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDetailDTO> getEmployee(@PathVariable Long id) {
+    public ResponseEntity<EmployeeDetailDTO> getEmployee(@PathVariable("id") Long id) {
         return ResponseEntity.ok(employeeService.getEmployeeById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeSummaryDTO> updateEmployee(@PathVariable Long id,
+    public ResponseEntity<EmployeeSummaryDTO> updateEmployee(@PathVariable("id") Long id,
                                                              @Valid @RequestBody EmployeeSummaryDTO dto) {
         return ResponseEntity.ok(employeeService.updateEmployeeDetails(id, dto));
     }
@@ -52,14 +52,14 @@ public class EmployeeController {
      * Endpoint pour le "Soft Delete" et la Réactivation
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> toggleStatus(@PathVariable Long id, @RequestParam(name = "status") boolean active) {
+    public ResponseEntity<Void> toggleStatus(@PathVariable("id") Long id, @RequestParam(name = "status") boolean active) {
         // Appel au service (qui gère Cognito + BDD)
         employeeService.toggleEmployeeStatus(id, active);
         return ResponseEntity.noContent().build(); // 204 No Content
     }
 
     @PostMapping("/{id}/advances")
-    public ResponseEntity<?> addAdvance(@PathVariable Long id, @RequestBody SalaryAdvanceDTO dto) {
+    public ResponseEntity<?> addAdvance(@PathVariable("id") Long id, @RequestBody SalaryAdvanceDTO dto) {
         try {
             return ResponseEntity.ok(employeeService.addSalaryAdvance(id, dto));
         } catch (Exception e) {
@@ -68,7 +68,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}/advances")
-    public ResponseEntity<List<SalaryAdvanceDTO>> getAdvances(@PathVariable Long id) {
+    public ResponseEntity<List<SalaryAdvanceDTO>> getAdvances(@PathVariable("id") Long id) {
         return ResponseEntity.ok(employeeService.getEmployeeAdvances(id));
     }
 }

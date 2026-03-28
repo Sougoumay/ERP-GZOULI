@@ -24,7 +24,7 @@ public class InvoiceController {
 
     @PostMapping
     public ResponseEntity<?> addInvoice(
-            @PathVariable Long projectId,
+            @PathVariable("projectId") Long projectId,
             @RequestBody InvoiceRegistrationDTO dto    // Le fichier PDF
     ) {
 
@@ -39,14 +39,14 @@ public class InvoiceController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<InvoiceDTO>> getInvoices(@PathVariable Long projectId) {
+    public ResponseEntity<List<InvoiceDTO>> getInvoices(@PathVariable("projectId") Long projectId) {
         return ResponseEntity.ok(invoiceService.getInvoicesByProject(projectId));
     }
 
     @PutMapping(value = "/{invoiceId}")
     public ResponseEntity<?> updateInvoice(
-            @PathVariable Long projectId,
-            @PathVariable Long invoiceId,
+            @PathVariable("projectId") Long projectId,
+            @PathVariable("invoiceId") Long invoiceId,
             @RequestBody InvoiceRegistrationDTO dto
     ) {
         try {
@@ -59,14 +59,14 @@ public class InvoiceController {
 
     // TOGGLE CERTIFICATION (Action rapide)
     @PatchMapping("/{invoiceId}/certify")
-    public ResponseEntity<?> toggleCertify(@PathVariable Long projectId, @PathVariable Long invoiceId) {
+    public ResponseEntity<?> toggleCertify(@PathVariable("projectId") Long projectId, @PathVariable("invoiceId") Long invoiceId) {
         invoiceService.toggleCertification(invoiceId);
         return ResponseEntity.ok().build();
     }
 
     // SUPPRESSION FACTURE
     @DeleteMapping("/{invoiceId}")
-    public ResponseEntity<?> deleteInvoice(@PathVariable Long projectId, @PathVariable Long invoiceId) {
+    public ResponseEntity<?> deleteInvoice(@PathVariable("projectId") Long projectId, @PathVariable("invoiceId") Long invoiceId) {
         invoiceService.deleteInvoice(invoiceId);
         return ResponseEntity.ok().build();
     }
