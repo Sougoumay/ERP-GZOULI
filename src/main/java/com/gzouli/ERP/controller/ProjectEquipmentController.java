@@ -28,7 +28,7 @@ public class ProjectEquipmentController {
     // 2. Affecter du matériel (Prendre du stock)
     @PostMapping
     public ResponseEntity<?> assignEquipment(
-            @PathVariable Long projectId,
+            @PathVariable("projectId") Long projectId,
             @RequestBody @Valid AssignmentRequestDTO request) {
         try {
             equipmentService.assignToProject(projectId, request);
@@ -42,8 +42,8 @@ public class ProjectEquipmentController {
     // PATCH car on modifie juste la date de fin
     @PatchMapping("/{assignmentId}/release")
     public ResponseEntity<?> releaseEquipment(
-            @PathVariable Long projectId,
-            @PathVariable Long assignmentId,
+            @PathVariable("projectId") Long projectId,
+            @PathVariable("assignmentId") Long assignmentId,
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate returnDate) {
         try {
             equipmentService.releaseFromProject(projectId, assignmentId, returnDate);

@@ -27,7 +27,7 @@ public class ProjectSummaryDTO {
 
     private String specificObjectives; // Ajouté comme demandé
 
-    @PositiveOrZero(message = "Le montant ne peut pas être négatif")
+//    @PositiveOrZero(message = "Le montant ne peut pas être négatif")
     private Double amountIncTax;
 
     @NotNull(message = "Le montant HT est obligatoire")

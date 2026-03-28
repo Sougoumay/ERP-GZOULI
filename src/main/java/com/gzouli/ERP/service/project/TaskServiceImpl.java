@@ -8,9 +8,11 @@ import com.gzouli.ERP.dto.project.TaskDTO;
 import com.gzouli.ERP.entity.Employee;
 import com.gzouli.ERP.entity.Project;
 import com.gzouli.ERP.entity.Task;
+import com.gzouli.ERP.enums.Role;
 import com.gzouli.ERP.exception.BusinessException;
 import com.gzouli.ERP.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +34,13 @@ public class TaskServiceImpl implements TaskService {
         if (!projectRepository.existsById(projectId)) {
             throw new ResourceNotFoundException("Projet introuvable");
         }
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Employé introuvable"));
+
         return taskRepository.findByProjectId(projectId).stream()
+                .filter(task -> (!Role.TECHNICIEN.equals(employee.getRole())) || 
+                        (task.getAssignee() != null && task.getAssignee().getId().equals(employee.getId())))
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
@@ -56,7 +64,6 @@ public class TaskServiceImpl implements TaskService {
             Employee assignee = employeeRepository.findById(dto.getAssigneeId())
                     .orElseThrow(() -> new ResourceNotFoundException("Employé introuvable"));
 
-            // Règle métier optionnelle : Vérifier si l'employé est actif ?
             if (!assignee.isActive()) {
                 throw new BusinessException("Impossible d'assigner une tâche à un employé inactif.");
             }
@@ -80,14 +87,12 @@ public class TaskServiceImpl implements TaskService {
 
         // Mise à jour de l'assignation
         if (dto.getAssigneeId() != null) {
-            // Si on change d'assigné
             if (task.getAssignee() == null || !task.getAssignee().getId().equals(dto.getAssigneeId())) {
                 Employee newAssignee = employeeRepository.findById(dto.getAssigneeId())
                         .orElseThrow(() -> new ResourceNotFoundException("Employé introuvable"));
                 task.setAssignee(newAssignee);
             }
         } else {
-            // Si on retire l'assignation (null envoyé)
             task.setAssignee(null);
         }
 
@@ -100,10 +105,10 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tâche introuvable"));
 
+        verifyTaskAccess(task);
+
         boolean newState = !Boolean.TRUE.equals(task.getIsCompleted());
         task.setIsCompleted(newState);
-
-        // Si complété -> Date du jour, sinon -> null
         task.setCompletionDate(newState ? LocalDate.now() : null);
 
         return mapToDTO(taskRepository.save(task));
@@ -112,10 +117,21 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public void deleteTask(Long taskId) {
-        if (!taskRepository.existsById(taskId)) {
-            throw new ResourceNotFoundException("Tâche introuvable");
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tâche introuvable"));
+        taskRepository.delete(task);
+    }
+
+    private void verifyTaskAccess(Task task) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Employé introuvable"));
+
+        if (Role.TECHNICIEN.equals(employee.getRole())) {
+            if (task.getAssignee() == null || !task.getAssignee().getId().equals(employee.getId())) {
+                throw new BusinessException("Accès refusé. Cette tâche ne vous est pas assignée.");
+            }
         }
-        taskRepository.deleteById(taskId);
     }
 
     @Override

@@ -16,6 +16,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     // Pour n'afficher que les projets actifs dans certaines listes
     List<Project> findByActiveTrue();
 
+    List<Project> findBySupervisorsId(Long employeeId);
+
     // Cette requête récupère le projet SI :
     // - L'employé est dans la liste des superviseurs
     // - OU SI l'employé est assigné à au moins une tâche de ce projet

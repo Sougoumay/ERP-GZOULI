@@ -31,13 +31,13 @@ public class ProjectController {
 
     // READ ONE (Detail)
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectDetailDTO> getProjectById(@PathVariable Long id) {
+    public ResponseEntity<ProjectDetailDTO> getProjectById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(projectService.getProjectById(id));
     }
 
     // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectSummaryDTO> updateProject(@PathVariable Long id,
+    public ResponseEntity<ProjectSummaryDTO> updateProject(@PathVariable("id") Long id,
                                                            @RequestBody ProjectSummaryDTO dto) {
         return ResponseEntity.ok(projectService.updateProject(id, dto));
     }
@@ -45,26 +45,26 @@ public class ProjectController {
     // SOFT DELETE / ENABLE
     // Exemple : PUT /api/projects/1/status?active=false
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Void> toggleStatus(@PathVariable Long id, @RequestParam boolean active) {
+    public ResponseEntity<Void> toggleStatus(@PathVariable("id") Long id, @RequestParam("active") boolean active) {
         projectService.toggleProjectStatus(id, active);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/team")
-    public ResponseEntity<Void> addTeamMembers(@PathVariable Long id, @RequestBody List<Long> employeeIds) {
+    public ResponseEntity<Void> addTeamMembers(@PathVariable("id") Long id, @RequestBody List<Long> employeeIds) {
         System.out.println("L'ajout d'un elt est en cours pour ces id" + employeeIds.toString());
         projectService.assignSupervisor(id, employeeIds);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}/team")
-    public ResponseEntity<List<TeamMemberDTO>> getProjectTeam(@PathVariable Long id) {
+    public ResponseEntity<List<TeamMemberDTO>> getProjectTeam(@PathVariable("id") Long id) {
         return ResponseEntity.ok(projectService.getProjectTeam(id));
     }
 
 
     @PostMapping("/{id}/team/remove")
-    public ResponseEntity<Void> removeTeamMembers(@PathVariable Long id, @RequestBody List<Long> employeeIds) {
+    public ResponseEntity<Void> removeTeamMembers(@PathVariable("id") Long id, @RequestBody List<Long> employeeIds) {
         projectService.removeSupervisor(id, employeeIds);
         return ResponseEntity.noContent().build();
     }

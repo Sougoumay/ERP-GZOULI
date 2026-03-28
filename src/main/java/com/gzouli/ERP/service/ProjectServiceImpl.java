@@ -8,9 +8,11 @@ import com.gzouli.ERP.entity.Employee;
 import com.gzouli.ERP.entity.Expense;
 import com.gzouli.ERP.entity.Invoice;
 import com.gzouli.ERP.entity.Project;
+import com.gzouli.ERP.enums.Role;
 import com.gzouli.ERP.exception.BusinessException;
 import com.gzouli.ERP.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,6 +78,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDetailDTO getProjectById(Long id) {
+        verifyProjectAccess(id);
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Projet introuvable avec l'ID : " + id));
 
@@ -114,13 +117,28 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional(readOnly = true)
     public List<ProjectSummaryDTO> getAllProjects() {
-        return projectRepository.findAll().stream()
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Employé introuvable"));
+
+        List<Project> projects;
+
+        if (employee.getRole() == Role.ADMIN) {
+            projects = projectRepository.findAll();
+        } else if (employee.getRole() == Role.TECHNICIEN || employee.getRole() == Role.INGENIEUR) {
+            projects = projectRepository.findBySupervisorsId(employee.getId());
+        } else {
+            projects = List.of();
+        }
+
+        return projects.stream()
                 .map(this::mapToSummary)
                 .collect(Collectors.toList());
     }
 
     @Override
     public void toggleProjectStatus(Long id, boolean isActive) {
+        verifyProjectAccess(id);
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Projet introuvable avec l'ID : " + id));
 
@@ -186,6 +204,24 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void addInvoice(Long pId, InvoiceDTO iDto) {}
     @Override public MonthlyReportDataDTO getMonthlyReportData(Long pId, int m, int y) { return null; }
+
+    // --- Helpers d'Autorisation ---
+
+    private void verifyProjectAccess(Long projectId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Employé introuvable"));
+
+        if (employee.getRole() == Role.TECHNICIEN || employee.getRole() == Role.INGENIEUR) {
+            Project project = projectRepository.findById(projectId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Projet introuvable"));
+            boolean hasAccess = project.getSupervisors().stream()
+                    .anyMatch(sup -> sup.getId().equals(employee.getId()));
+            if (!hasAccess) {
+                throw new BusinessException("Accès refusé. Vous n'êtes pas assigné à ce projet.");
+            }
+        }
+    }
 
     // --- Helpers de Mapping ---
 

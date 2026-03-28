@@ -23,8 +23,8 @@ public class ProjectRegistrationDTO {
     private String generalObjectives;
     private String specificObjectives;
 
-    @NotNull(message = "Le montant TTC est obligatoire")
-    @Positive
+//    @NotNull(message = "Le montant TTC est obligatoire")
+//    @Positive
     private Double amountIncTax;
 
     @NotNull(message = "Le montant HT est obligatoire")
