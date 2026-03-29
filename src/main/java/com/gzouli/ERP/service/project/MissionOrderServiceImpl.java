@@ -18,8 +18,10 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class MissionOrderServiceImpl implements MissionOrderService {
     private final ProjectMissionOrderRepository projectMissionOrderRepository;
     private final ProjectRepository projectRepository;
@@ -41,7 +43,7 @@ public class MissionOrderServiceImpl implements MissionOrderService {
 
         // Extraction de l'email de l'utilisateur connecté via le Token JWT Cognito [1]
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println(email);
+        log.debug("Email extrait du contexte: {}", email);
         Employee employee = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Employé introuvable"));
 
@@ -105,7 +107,7 @@ public class MissionOrderServiceImpl implements MissionOrderService {
             try {
                 // s3Service.deleteFile(order.getFileKey()); 
             } catch(Exception e) {
-                System.err.println("Impossible de supprimer le fichier S3 : " + e.getMessage());
+                log.error("Impossible de supprimer le fichier S3 : {}", e.getMessage(), e);
             }
         }
         projectMissionOrderRepository.delete(order);

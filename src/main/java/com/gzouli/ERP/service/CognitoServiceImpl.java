@@ -11,9 +11,11 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CognitoServiceImpl implements CognitoService {
 
     private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
@@ -61,11 +63,12 @@ public class CognitoServiceImpl implements CognitoService {
                         .build();
                 cognitoClient.adminAddUserToGroup(groupRequest);
             }
+            log.info("Utilisateur Cognito créé avec succès : {}", sub);
             return sub;
 
         } catch (CognitoIdentityProviderException e) {
             // On capture l'erreur AWS et on la relance proprement
-            System.out.println(e.awsErrorDetails().errorMessage());
+            log.error("Échec de la création Cognito: {}", e.awsErrorDetails().errorMessage(), e);
             throw new CognitoInteractionException(e.awsErrorDetails().errorMessage(), e);
         }
     }

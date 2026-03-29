@@ -9,10 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/inventory")
 //@RequiredArgsConstructor
+@Slf4j
 public class InventoryController {
 
     private final EquipmentService equipmentService;
@@ -46,9 +48,9 @@ public class InventoryController {
     @PostMapping
     public ResponseEntity<?> createItem(@RequestBody EquipmentDTO dto) {
         try {
-            System.out.println(dto.toString());
+            log.debug("Création d'inventaire : {}", dto);
             EquipmentDTO created = equipmentService.createEquipment(dto);
-            System.out.println(created.toString());
+            log.debug("Inventaire créé : {}", created);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (BusinessException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

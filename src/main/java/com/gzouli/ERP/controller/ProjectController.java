@@ -9,10 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/projects")
 @RequiredArgsConstructor
+@Slf4j
 public class ProjectController {
     private final ProjectService projectService;
 
@@ -52,7 +54,7 @@ public class ProjectController {
 
     @PostMapping("/{id}/team")
     public ResponseEntity<Void> addTeamMembers(@PathVariable("id") Long id, @RequestBody List<Long> employeeIds) {
-        System.out.println("L'ajout d'un elt est en cours pour ces id" + employeeIds.toString());
+        log.info("L'ajout d'une équipe est en cours pour le projet ID {} avec les employés : {}", id, employeeIds);
         projectService.assignSupervisor(id, employeeIds);
         return ResponseEntity.ok().build();
     }

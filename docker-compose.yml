@@ -58,4 +58,3 @@ volumes:
 networks:
   gzouli_erp:
     driver: bridge
-    internal: true

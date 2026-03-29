@@ -14,10 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
 @AllArgsConstructor
+@Slf4j
 public class InvoiceServiceImpl implements InvoiceService {
     private final ProjectRepository projectRepository;
     private final InvoiceRepository invoiceRepository;
@@ -119,7 +121,7 @@ public class InvoiceServiceImpl implements InvoiceService {
             try {
                 fileStorageService.deleteFile(s3Key);
             } catch (Exception e) {
-                System.err.println("Warning: Fichier S3 orphelin " + s3Key);
+                log.warn("Fichier S3 orphelin détecté : {}", s3Key);
             }
         }
     }
