@@ -9,4 +9,6 @@ public interface FileStorageService {
     String generatePresignedUrl(String key);
 
     String generateUploadUrl(String key, String contentType);
+
+    byte[] downloadFileBytes(String fileKey);
 }

@@ -20,6 +20,7 @@ public class Project {
     private Long id;
     private String owner;
     private String name;
+    @Column(columnDefinition = "TEXT")
     private String description; // Objet du marché
     @Column(columnDefinition = "TEXT")
     private String generalObjectives;

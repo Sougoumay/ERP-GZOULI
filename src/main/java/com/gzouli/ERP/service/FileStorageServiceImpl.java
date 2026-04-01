@@ -2,6 +2,8 @@ package com.gzouli.ERP.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.core.ResponseBytes;
+import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -86,6 +88,30 @@ public class FileStorageServiceImpl implements FileStorageService{
 
         PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(presignRequest);
         return presignedRequest.url().toString();
+    }
+
+    /**
+     * Télécharge un fichier depuis AWS S3 et le retourne sous forme de tableau d'octets (byte[]).
+     * Parfait pour insérer des images dans un document Word ou PDF en mémoire.
+     */
+    public byte[] downloadFileBytes(String fileKey) {
+        try {
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                    .bucket(bucketName) // Assurez-vous d'avoir votre variable contenant le nom du bucket ici
+                    .key(fileKey)
+                    .build();
+
+            // Utilisation du ResponseTransformer pour convertir directement le flux S3 en byte[]
+            ResponseBytes<GetObjectResponse> objectBytes = s3Client.getObject(
+                    getObjectRequest,
+                    ResponseTransformer.toBytes()
+            );
+
+            return objectBytes.asByteArray();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors du téléchargement de l'image depuis S3 (Clé: " + fileKey + ")", e);
+        }
     }
 
 //    @PostConstruct
