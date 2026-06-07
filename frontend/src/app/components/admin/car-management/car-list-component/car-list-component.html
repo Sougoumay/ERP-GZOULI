@@ -1,0 +1,111 @@
+<div class="container-fluid p-4">
+
+  <!-- En-tête -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="mb-1">Gestion du Parc Automobile</h1>
+      <p class="text-muted">Suivi des véhicules, des affectations et des charges fixes (Crédit/Leasing).</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="openCarDialog()">
+      <mat-icon>add</mat-icon> Nouveau Véhicule
+    </button>
+  </div>
+
+  <!-- Tableau -->
+  <div class="mat-elevation-z2 bg-white rounded">
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <!-- Véhicule (Marque Model) -->
+      <ng-container matColumnDef="car">
+        <th mat-header-cell *matHeaderCellDef> Véhicule </th>
+        <td mat-cell *matCellDef="let row" class="fw-bold">
+          <mat-icon class="car-icon">directions_car</mat-icon>
+          {{ row.brand }} {{ row.model }}
+        </td>
+      </ng-container>
+
+      <!-- Matricule -->
+      <ng-container matColumnDef="matricule">
+        <th mat-header-cell *matHeaderCellDef> Immatriculation </th>
+        <td mat-cell *matCellDef="let row">
+          <span class="matricule-badge">{{ row.registrationNumber }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Coût -->
+      <ng-container matColumnDef="cost">
+        <th mat-header-cell *matHeaderCellDef> Coût Mensuel </th>
+        <td mat-cell *matCellDef="let row"> {{ row.monthlyCost | number:'1.0-0' }} DH </td>
+      </ng-container>
+
+      <!-- Etat -->
+      <ng-container matColumnDef="state">
+        <th mat-header-cell *matHeaderCellDef> État Technique </th>
+        <td mat-cell *matCellDef="let row">
+          <span class="state-badge" [ngClass]="row.state">
+            @if (row.state === 'EN_SERVICE') {
+              <mat-icon inline>check_circle_outline</mat-icon> En Service
+            } @else if (row.state === 'EN_PANNE') {
+              <mat-icon inline>build</mat-icon> En Panne
+            } @else if (row.state === 'VENDU') {
+              <mat-icon inline>block</mat-icon> Vendu / Sorti
+            } @else {
+              {{ row.state }}
+            }
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- État / Conducteur -->
+      <ng-container matColumnDef="driver">
+        <th mat-header-cell *matHeaderCellDef> Conducteur Actuel </th>
+        <td mat-cell *matCellDef="let row">
+          @if (row.assigned) {
+            <div class="driver-badge">
+              <mat-icon inline>person</mat-icon> {{ row.currentDriverName }}
+            </div>
+          } @else {
+            <span class="text-success small">
+              <mat-icon inline style="font-size:14px">check_circle</mat-icon> Disponible au parc
+            </span>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let row">
+
+          <!-- Bouton Affecter / Libérer -->
+          @if (row.assigned) {
+            <button mat-stroked-button color="warn" class="small-btn" (click)="releaseCar(row)" matTooltip="Récupérer le véhicule">
+              Libérer
+            </button>
+          } @else {
+            <button mat-stroked-button color="primary" class="small-btn" (click)="openAssignDialog(row)" matTooltip="Donner le véhicule à un employé">
+              Affecter
+            </button>
+          }
+
+          <!-- Menu Options -->
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="openCarDialog(row)">
+              <mat-icon>edit</mat-icon> Modifier infos
+            </button>
+            <button mat-menu-item (click)="deleteCar(row)">
+              <mat-icon color="warn">delete</mat-icon> Supprimer
+            </button>
+          </mat-menu>
+
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

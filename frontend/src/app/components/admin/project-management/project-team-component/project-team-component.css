@@ -1,0 +1,65 @@
+.team-container {
+  max-width: 900px; /* Limite la largeur pour la lisibilité */
+}
+
+/* --- Zone Ajout --- */
+.add-member-card {
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 32px;
+}
+
+.add-member-card h3 {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.controls-row {
+  display: flex;
+  gap: 16px;
+  align-items: center; /* Aligne le bouton avec le champ */
+}
+
+.employee-select {
+  flex: 1; /* Prend tout l'espace restant */
+}
+
+/* --- Table --- */
+.members-list h3 {
+  color: #2a2ea8;
+  border-left: 4px solid #2a2ea8;
+  padding-left: 10px;
+  margin-bottom: 16px;
+}
+
+table {
+  width: 100%;
+}
+
+.fw-bold {
+  font-weight: 500;
+}
+
+/* --- Badges Rôles --- */
+.role-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.role-badge.ingenieur {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.role-badge.technicien {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}

@@ -1,0 +1,109 @@
+.journal-container {
+  padding: 20px;
+  background-color: #f8fafc; /* Gris très léger */
+  min-height: 100%;
+}
+
+.table-section {
+  background: white;
+  border-radius: 8px;
+  padding: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.actions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.header-titles {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-titles h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.full-width-table {
+  width: 100%;
+}
+
+/* Badges pour les types de prestations */
+.badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.badge.design {
+  background-color: #e3f2fd;
+  color: #1976d2; /* Bleu */
+}
+
+.badge.supervision {
+  background-color: #e8f5e9;
+  color: #2e7d32; /* Vert */
+}
+
+.badge.both {
+  background-color: #fff3e0;
+  color: #e65100; /* Orange */
+}
+
+/* Cellule Auteur */
+.author-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #475569;
+  font-weight: 500;
+}
+
+.author-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #94a3b8;
+}
+
+/* Loading et Empty State */
+.loading-shade {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 250px;
+  gap: 15px;
+  color: #64748b;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: #94a3b8;
+}
+
+.empty-icon {
+  font-size: 60px;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}

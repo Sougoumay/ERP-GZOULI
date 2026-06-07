@@ -1,0 +1,79 @@
+<h2 mat-dialog-title>
+  <mat-icon class="money-icon">payments</mat-icon>
+  Avances : {{ data.firstName }} {{ data.lastName }}
+</h2>
+
+<mat-dialog-content>
+
+  <!-- Zone 1 : Formulaire d'Ajout -->
+  <div class="add-section">
+    <h4>Nouvelle demande d'avance</h4>
+    <form [formGroup]="form" class="form-row">
+
+      <mat-form-field appearance="outline" style="flex: 1;">
+        <mat-label>Montant (DH)</mat-label>
+        <input matInput type="number" formControlName="amount">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="flex: 1;">
+        <mat-label>Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="flex: 2;">
+        <mat-label>Motif / Note</mat-label>
+        <input matInput formControlName="note" placeholder="Ex: Avance Aid El Kebir">
+      </mat-form-field>
+
+      <button mat-mini-fab color="primary" (click)="onSubmit()" [disabled]="form.invalid" matTooltip="Ajouter">
+        <mat-icon>add</mat-icon>
+      </button>
+
+    </form>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Zone 2 : Historique -->
+  <div class="history-section">
+    <div class="history-header">
+      <h4>Historique</h4>
+      <span class="total-badge">Total Cumulé : {{ totalAdvances | number:'1.0-0' }} DH</span>
+    </div>
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+
+      <!-- Date -->
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> Date </th>
+        <td mat-cell *matCellDef="let row"> {{ row.date | date:'dd/MM/yyyy' }} </td>
+      </ng-container>
+
+      <!-- Montant -->
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef> Montant </th>
+        <td mat-cell *matCellDef="let row" class="amount-cell"> -{{ row.amount }} DH </td>
+      </ng-container>
+
+      <!-- Note -->
+      <ng-container matColumnDef="note">
+        <th mat-header-cell *matHeaderCellDef> Motif </th>
+        <td mat-cell *matCellDef="let row"> {{ row.note || '-' }} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="3" style="text-align: center; padding: 10px;">Aucune avance enregistrée.</td>
+      </tr>
+    </table>
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Fermer</button>
+</mat-dialog-actions>

@@ -1,0 +1,94 @@
+<div class="dialog-header">
+  <h2 mat-dialog-title>{{ isEditMode ? 'Modifier Employé' : 'Nouvel Employé' }}</h2>
+  <span class="spacer"></span>
+  <button mat-icon-button (click)="onCancel()"><mat-icon>close</mat-icon></button>
+</div>
+
+<div mat-dialog-content>
+  <form [formGroup]="employeeForm" class="employee-form">
+
+    <!-- Ligne 1 : Identité -->
+    <div class="row-2-col">
+      <mat-form-field appearance="outline">
+        <mat-label>Prénom</mat-label>
+        <input matInput formControlName="firstName">
+        @if (employeeForm.get('firstName')?.hasError('required')) {
+          <mat-error>Le prénom est requis</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nom</mat-label>
+        <input matInput formControlName="lastName">
+      </mat-form-field>
+    </div>
+
+    <!-- Ligne 2 : Contact & Rôle -->
+    <div class="row-2-col">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email">
+        <mat-icon matSuffix>email</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Rôle</mat-label>
+        <mat-select formControlName="role">
+          @for (role of roles; track role) {
+            <mat-option [value]="role">
+              {{ role }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Ligne 3 : Info RH (Salaire & Naissance) -->
+    <div class="row-2-col">
+      <mat-form-field appearance="outline">
+        <mat-label>Numéro d'identité</mat-label>
+        <input matInput formControlName="idCardNumber">
+        <mat-icon matSuffix>home</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Date de Naissance</mat-label>
+        <input matInput [matDatepicker]="birthdayPicker" formControlName="birthday" placeholder="AAAA-MM-JJ">
+        <mat-datepicker-toggle matIconSuffix [for]="birthdayPicker"></mat-datepicker-toggle>
+        <mat-datepicker #birthdayPicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <!-- Ligne 4 : Contact Détail -->
+    <div class="row-2-col">
+      <mat-form-field appearance="outline">
+        <mat-label>Téléphone</mat-label>
+        <input matInput formControlName="phoneNumber">
+        <mat-icon matSuffix>phone</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Salaire de Base (DH)</mat-label>
+        <input matInput type="number" formControlName="salary">
+        <mat-icon matSuffix>payments</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Ligne 5 : Address -->
+    <div class="row-1-col">
+      <mat-form-field appearance="outline">
+        <mat-label>Adresse Postale</mat-label>
+        <input matInput formControlName="address">
+        <mat-icon matSuffix>home</mat-icon>
+      </mat-form-field>
+    </div>
+
+  </form>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Annuler</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="employeeForm.invalid">
+    {{ isEditMode ? 'ENREGISTRER' : 'CRÉER' }}
+  </button>
+</div>

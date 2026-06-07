@@ -1,0 +1,68 @@
+.container-fluid { max-width: 1200px; margin: 0 auto; }
+
+.fw-bold { font-weight: 500; display: flex; align-items: center; gap: 8px; }
+.car-icon { color: #3f51b5; }
+
+/* Matricule style "Plaque" */
+.matricule-badge {
+  background: #eee;
+  border: 1px solid #ccc;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.driver-badge {
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.small-btn { font-size: 12px; line-height: 24px; padding: 0 10px; }
+
+/* Badge générique */
+.state-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Couleurs spécifiques selon l'état */
+.state-badge.EN_SERVICE {
+  background-color: #e8f5e9;
+  color: #2e7d32; /* Vert */
+  border: 1px solid #c8e6c9;
+}
+
+.state-badge.EN_PANNE {
+  background-color: #ffebee;
+  color: #c62828; /* Rouge */
+  border: 1px solid #ffcdd2;
+}
+
+.state-badge.VENDU, .state-badge.HORS_SERVICE {
+  background-color: #eceff1;
+  color: #546e7a; /* Gris Bleu */
+  border: 1px solid #cfd8dc;
+  text-decoration: line-through; /* Barré pour bien montrer que c'est fini */
+}
+
+/* Ajustement icônes dans les badges */
+.state-badge mat-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+}

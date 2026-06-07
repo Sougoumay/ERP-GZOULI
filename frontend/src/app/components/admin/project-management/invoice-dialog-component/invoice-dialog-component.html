@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>Nouvelle Facture / Décompte</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="invoice-form">
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>N° Facture / Réf</mat-label>
+        <input matInput formControlName="invoiceNumber" placeholder="Ex: FAC-2024-01">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Date de dépôt</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="submissionDate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Montant HT (DH)</mat-label>
+        <input matInput type="number" formControlName="amount">
+      </mat-form-field>
+
+      <mat-checkbox formControlName="isCertified" color="primary" class="certif-check">
+        Déjà Certifié (Validé) ?
+      </mat-checkbox>
+    </div>
+
+    <!-- Upload Fichier -->
+    <div class="file-upload-area">
+      <label for="fileUpload" class="upload-btn">
+        <mat-icon>cloud_upload</mat-icon>
+        {{ selectedFile ? selectedFile.name : 'Choisir le scan (PDF)' }}
+      </label>
+      <input type="file" id="fileUpload" (change)="onFileSelected($event)" accept="application/pdf" hidden>
+      <div *ngIf="!selectedFile && form.touched" class="error-text">Le fichier est requis.</div>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <!-- On désactive aussi le bouton d'annulation pendant l'envoi pour éviter une fermeture prématurée -->
+  <button mat-button mat-dialog-close [disabled]="isSubmitting">Annuler</button>
+
+  <!-- Intégration du Spinner avec gestion de l'état isSubmitting -->
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="form.invalid || isSubmitting">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+      <!-- Le spinner s'affiche uniquement si isSubmitting est true -->
+      <mat-spinner *ngIf="isSubmitting" diameter="20" color="accent"></mat-spinner>
+
+      <!-- Changement de texte dynamique -->
+      <span *ngIf="isSubmitting">Traitement...</span>
+      <span *ngIf="!isSubmitting">Enregistrer</span>
+    </div>
+  </button>
+<!--  <button mat-button mat-dialog-close>Annuler</button>-->
+<!--  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="form.invalid || !selectedFile || isUploading">-->
+<!--    {{ isUploading ? 'Envoi...' : 'Enregistrer' }}-->
+<!--  </button>-->
+</mat-dialog-actions>

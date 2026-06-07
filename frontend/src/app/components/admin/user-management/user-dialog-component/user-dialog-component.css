@@ -1,0 +1,41 @@
+.dialog-header {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, #2a2ea8 0%, #008a7b 100%); /* Couleurs Logo */
+  color: white;
+  padding: 10px 24px;
+  margin: -24px -24px 20px -24px; /* Pour coller aux bords */
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.employee-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 500px; /* Largeur confortable */
+}
+
+/* Grille 2 colonnes */
+.row-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+/* Boutons */
+button[mat-icon-button] {
+  color: white;
+}

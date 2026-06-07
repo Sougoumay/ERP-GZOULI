@@ -1,0 +1,31 @@
+.project-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Plus d'espace entre les lignes */
+  width: 100%;
+  padding-top: 10px; /* Évite que le label du premier champ touche le haut */
+}
+
+/* Grille 2 colonnes équilibrée */
+.row-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 50% / 50% */
+  gap: 24px; /* Espace confortable entre colonne gauche et droite */
+}
+
+/* Pour les champs qui doivent prendre toute la largeur (Nom, Description) */
+.full-width {
+  width: 100%;
+  grid-column: 1 / -1; /* Force l'étalement si utilisé dans une grille */
+}
+
+/* Force tous les champs Material à remplir leur conteneur */
+mat-form-field {
+  width: 100%;
+}
+
+/* Ajustement spécifique pour les zones de texte (Objectifs) */
+textarea {
+  min-height: 80px; /* Hauteur minimale confortable */
+  resize: vertical; /* L'utilisateur peut agrandir si besoin */
+}

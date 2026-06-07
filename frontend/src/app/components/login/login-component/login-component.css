@@ -1,0 +1,94 @@
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Dégradé inspiré du logo GZouli [1] */
+  background: linear-gradient(135deg, #2a2ea8 0%, #008a7b 100%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.logo-wrapper {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.app-logo {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 5px;
+}
+
+.title {
+  color: #2a2ea8; /* Bleu du logo [1] */
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 1.4rem;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.login-button {
+  width: 100%;
+  height: 50px;
+  margin-top: 20px;
+  font-size: 1.1rem;
+  /* Couleur Teal du logo [1] */
+  background-color: #008a7b !important;
+  color: white !important;
+  border-radius: 8px;
+}
+
+.error-message {
+  color: #f44336;
+  /*font-size: 0.85rem;*/
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 30px;
+  color: #999;
+  font-size: 0.8rem;
+}
+
+mat-spinner {
+  margin: 0 auto;
+}
+
+.forgot-password-wrapper {
+  display: flex;
+  justify-content: flex-end; /* Aligne le lien à droite */
+  margin-top: -10px;         /* Remonte un peu vers le champ mot de passe */
+  margin-bottom: 20px;       /* Espace avant le bouton de connexion */
+}
+
+.forgot-link {
+  color: #304bea;               /* Gris discret par défaut */
+  text-decoration: none;     /* Pas de soulignement */
+  font-size: 14px;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #3f51b5;          /* Couleur primaire au survol (ajustez selon votre thème) */
+    text-decoration: underline;
+  }
+}

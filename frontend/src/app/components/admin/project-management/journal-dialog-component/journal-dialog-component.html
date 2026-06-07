@@ -1,0 +1,109 @@
+<h2 mat-dialog-title>Saisie du Journal de Chantier</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="journal-form">
+
+    <!-- BLOC 1 : Informations Générales -->
+    <div class="form-section">
+      <div class="section-header">
+        <mat-icon color="primary">info</mat-icon>
+        <h3>Informations Générales</h3>
+      </div>
+
+      <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>Date d'intervention</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="workDate">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Lieu (Ex: CT Tilouguite)</mat-label>
+          <input matInput formControlName="location" placeholder="Où s'est déroulée l'intervention ?">
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description détaillée des activités</mat-label>
+        <textarea matInput formControlName="taskDescription" rows="4"
+                  placeholder="Détaillez les tâches réalisées aujourd'hui (Ex: Levée topographique, terrassement en déblai...)"></textarea>
+      </mat-form-field>
+    </div>
+
+    <!-- BLOC 2 : Procès-Verbaux (Images ou PDF) -->
+    <div class="form-section">
+      <div class="section-header-flex">
+        <div class="title-group">
+          <mat-icon color="accent">assignment</mat-icon>
+          <h3>Procès-Verbaux (PV)</h3>
+        </div>
+        <button type="button" mat-stroked-button color="primary" (click)="pvInput.click()">
+          <mat-icon>add_photo_alternate</mat-icon> Ajouter des pages de PV
+        </button>
+        <!-- Permet de sélectionner plusieurs fichiers en un clic -->
+        <input type="file" #pvInput multiple accept="image/*" (change)="onPvSelected($event)" hidden>
+      </div>
+
+      <!-- Grille d'affichage des PVs -->
+      <div class="file-list" *ngIf="pvFiles.length > 0">
+        <div class="file-item" *ngFor="let file of pvFiles; let i = index">
+          <mat-icon>insert_drive_file</mat-icon>
+          <span class="file-name" [title]="file.name">{{ file.name }}</span>
+          <button mat-icon-button color="warn" (click)="removePv(i)" type="button" matTooltip="Supprimer">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      <p class="empty-text" *ngIf="pvFiles.length === 0">Aucun PV ajouté pour le moment.</p>
+    </div>
+
+    <!-- BLOC 3 : Photos du Chantier Légendées -->
+    <div class="form-section">
+      <div class="section-header-flex">
+        <div class="title-group">
+          <mat-icon color="warn">photo_camera</mat-icon>
+          <h3>Photos du Chantier (Avec Légendes)</h3>
+        </div>
+        <button type="button" mat-stroked-button color="warn" (click)="photoInput.click()">
+          <mat-icon>add_a_photo</mat-icon> Ajouter une Photo
+        </button>
+        <!-- On accepte uniquement les images ici -->
+        <input type="file" #photoInput accept="image/*" (change)="onPhotoSelected($event)" hidden>
+      </div>
+
+      <!-- Liste des photos sous forme de lignes (Très pratique sur PC) -->
+      <div class="photo-list" *ngIf="photoItems.length > 0">
+        <div class="photo-item-row" *ngFor="let item of photoItems; let i = index">
+
+          <div class="photo-info">
+            <mat-icon>image</mat-icon>
+            <span class="file-name" [title]="item.file.name">{{ item.file.name }}</span>
+          </div>
+
+          <mat-form-field appearance="outline" class="photo-desc-input">
+            <mat-label>Légende / Commentaire technique (qui apparaîtra sur le Word)</mat-label>
+            <input matInput [value]="item.description"
+                   (input)="updatePhotoDescription(i, $any($event.target).value)"
+                   placeholder="Ex: Installation de chantier, Ferraillage...">
+          </mat-form-field>
+
+          <button mat-icon-button color="warn" (click)="removePhoto(i)" type="button" matTooltip="Supprimer">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      <p class="empty-text" *ngIf="photoItems.length === 0">Aucune photo ajoutée pour le moment.</p>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close [disabled]="isUploading">Annuler</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="form.invalid || isUploading">
+    <mat-icon *ngIf="!isUploading">send</mat-icon>
+    <mat-icon *ngIf="isUploading">hourglass_empty</mat-icon>
+    {{ isUploading ? 'Enregistrement & Upload en cours...' : 'Envoyer le rapport' }}
+  </button>
+</mat-dialog-actions>

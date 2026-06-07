@@ -1,0 +1,90 @@
+<div class="inventory-container">
+
+  <!-- Header & Recherche -->
+  <div class="header-row">
+    <div>
+      <h1>Gestion du Parc Matériel</h1>
+      <p>Inventaire global des équipements (PC, Imprimantes, Mobilier...)</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="openDialog()">
+      <mat-icon>add</mat-icon> Nouvel Équipement
+    </button>
+  </div>
+
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Rechercher (Nom, Ref, État...)</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. HP, NEUF...">
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <!-- Tableau -->
+  <div class="table-container mat-elevation-z2">
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <!-- Réf -->
+      <ng-container matColumnDef="ref">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Réf / Série </th>
+        <td mat-cell *matCellDef="let row"> {{ row.reference }} - {{row.available}} </td>
+      </ng-container>
+
+      <!-- Label -->
+      <ng-container matColumnDef="label">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Désignation </th>
+        <td mat-cell *matCellDef="let row" class="fw-bold"> {{ row.label }} </td>
+      </ng-container>
+
+      <!-- Date Achat -->
+      <ng-container matColumnDef="purchaseDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Acheté le </th>
+        <td mat-cell *matCellDef="let row"> {{ row.purchaseDate | date:'dd/MM/yyyy' }} </td>
+      </ng-container>
+
+      <!-- État (Badge) -->
+      <ng-container matColumnDef="state">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> État </th>
+        <td mat-cell *matCellDef="let row">
+          <span class="state-badge" [ngClass]="row.state">
+            {{ row.state }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Disponibilité (Statut) -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Disponibilité </th>
+        <td mat-cell *matCellDef="let row">
+          <span *ngIf="row.available" class="status-available">
+            <mat-icon inline>check_circle</mat-icon> En Stock
+          </span>
+          <span *ngIf="!row.available" class="status-busy">
+            <mat-icon inline>construction</mat-icon> Sur Chantier
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button color="accent" (click)="openDialog(row)" matTooltip="Modifier">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteItem(row)"
+                  [disabled]="!row.available"
+                  [matTooltip]="row.available ? 'Supprimer' : 'Impossible : Matériel utilisé'">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="6">Aucun équipement trouvé.</td>
+      </tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 15, 25, 50]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

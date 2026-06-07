@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Modifier Matériel' : 'Nouveau Matériel' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form">
+
+    <!-- Label -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Désignation (Ex: PC Portable Dell)</mat-label>
+      <input matInput formControlName="label">
+    </mat-form-field>
+
+    <!-- Référence -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Référence / N° Série / Code Barre</mat-label>
+      <input matInput formControlName="reference">
+    </mat-form-field>
+
+    <!-- Date Achat & État (Sur la même ligne) -->
+    <div style="display: flex; gap: 15px;">
+      <mat-form-field appearance="outline" style="flex: 1;">
+        <mat-label>Date d'achat</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="purchaseDate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="flex: 1;">
+        <mat-label>État Actuel</mat-label>
+        <mat-select formControlName="state">
+          <mat-option *ngFor="let s of states" [value]="s">{{ s }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Annuler</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">
+    {{ isEditMode ? 'Mettre à jour' : 'Enregistrer' }}
+  </button>
+</mat-dialog-actions>
+

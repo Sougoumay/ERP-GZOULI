@@ -1,0 +1,99 @@
+<div class="container">
+  @if (isLoading) {
+    <div class="loading-shade">
+      <mat-spinner></mat-spinner>
+      <p>Chargement des données du projet...</p>
+    </div>
+  } @else {
+    <!-- En-tête : Navigation & Titre -->
+    <div class="header-section">
+      <button mat-icon-button (click)="goBack()" matTooltip="Retour à la liste">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
+      <div class="title-block">
+        <h1>{{ project?.name || 'Chargement...' }}</h1>
+        <span class="subtitle">Marché : {{ project?.description }}</span>
+      </div>
+
+      <!-- Badge de statut (Actif/Archivé) -->
+      @if (project) {
+        <span class="status-chip" [class.active]="project.active" [class.inactive]="!project.active">
+        {{ project.active ? 'EN COURS' : 'ARCHIVÉ' }}
+      </span>
+      }
+    </div>
+
+    <!-- Zone des Onglets -->
+    <mat-tab-group animationDuration="0ms" mat-stretch-tabs="false" mat-align-tabs="start">
+
+      <!-- Onglet 1 : Équipe (Prioritaire) -->
+    @if(userRole !== 'TECHNICIEN') {
+      <mat-tab label="Équipe & Affectations">
+        <div class="tab-content">
+          <!-- On passe l'ID du projet au composant enfant -->
+          @if (project) {
+            <app-project-team-component [project]="project"></app-project-team-component>
+          }
+        </div>
+      </mat-tab>
+    }
+
+      <!-- Onglet 2 : Informations (À faire plus tard) -->
+      <mat-tab label="Informations Générales">
+        <div class="p-3">
+          @if (project) {
+            <app-project-info-component
+              [project]="project"
+              (refreshRequest)="loadProjectData(project.id)">
+            </app-project-info-component>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- Onglet 3 : Finances -->
+    @if(userRole === 'ADMIN') {
+      <mat-tab label="Finances & Rentabilité">
+        <div class="p-3">
+          @if (project) {
+            <app-project-finance-component [project]="project"></app-project-finance-component>
+          }
+        </div>
+      </mat-tab>
+    }
+
+
+    @if(userRole !== 'TECHNICIEN') {
+      <mat-tab label="Matériel & Fournitures">
+        <div class="p-3">
+          <!-- On passe l'ID du projet au composant enfant -->
+          @if (project) {
+            <app-project-equipment-component [projectId]="project.id"></app-project-equipment-component>
+          }
+        </div>
+      </mat-tab>
+    }
+
+
+    <mat-tab label="Suivi Technique (Tâches)">
+      <div class="p-3">
+        <!-- On passe l'ID du projet au composant enfant -->
+        @if (project) {
+          <app-project-task-component [projectId]="project.id"></app-project-task-component>
+        }
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Journaux de Chantier">
+      <div class="p-3">
+        <!-- On passe l'ID du projet au composant enfant -->
+        @if (project) {
+          <app-project-journal-component [project]="project"></app-project-journal-component>
+        }
+      </div>
+    </mat-tab>
+
+    </mat-tab-group>
+  }
+
+</div>

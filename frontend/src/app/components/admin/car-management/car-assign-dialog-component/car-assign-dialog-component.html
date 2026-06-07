@@ -1,0 +1,31 @@
+<h2 mat-dialog-title>Affecter Véhicule</h2>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <p class="text-muted">Sélectionnez le conducteur responsable de ce véhicule.</p>
+
+    <!-- Liste des Employés -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Conducteur</mat-label>
+      <mat-select formControlName="employeeId">
+        <mat-option *ngFor="let emp of employees" [value]="emp.id">
+          {{ emp.firstName }} {{ emp.lastName }} ({{ emp.role }})
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Date Début -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Date de prise en main</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="startDate">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Annuler</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">
+    Valider Affectation
+  </button>
+</mat-dialog-actions>

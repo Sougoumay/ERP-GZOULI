@@ -1,0 +1,118 @@
+<h2 mat-dialog-title class="dialog-title">
+  <!-- Ici l'interpolation {{ }} avec ternaire reste la méthode la plus propre pour du texte simple -->
+  {{ isEditMode ? 'Modifier le Marché' : 'Nouveau Marché' }}
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="projectForm" class="project-form">
+
+    <!-- Ligne 1 : Maitre d'ouvrage -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Maitre d'ouvrage</mat-label>
+      <input matInput formControlName="projectOwner" placeholder="Ex: Achraf GADDOURI">
+
+      <!-- NOUVELLE SYNTAXE @if -->
+      @if (projectForm.get('projectOwner')?.hasError('required')) {
+        <mat-error>Le maitre d'ouvrage est requis</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Ligne 1 : Nom -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Intitulé du Projet</mat-label>
+      <input matInput formControlName="name" placeholder="Ex: Étude Route RN1">
+
+      <!-- NOUVELLE SYNTAXE @if -->
+      @if (projectForm.get('name')?.hasError('required')) {
+        <mat-error>L'intitulé est requis</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Ligne 2 : Description (Objet) -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Objet du Marché</mat-label>
+      <textarea matInput formControlName="description" rows="2" placeholder="Description brève..."></textarea>
+
+      @if (projectForm.get('description')?.hasError('required')) {
+        <mat-error>L'objet du marché est requis</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Ligne 3 : Finances (HT & TTC) -->
+    <div class="row-2-col">
+      <mat-form-field appearance="outline">
+        <mat-label>Montant HT (DH)</mat-label>
+        <input matInput type="number" formControlName="amountExTax">
+
+        @if (projectForm.get('amountExTax')?.hasError('required')) {
+          <mat-error>Requis</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Délai (Mois)</mat-label>
+        <input matInput type="number" formControlName="durationMonths">
+
+        @if (projectForm.get('durationMonths')?.hasError('min')) {
+          <mat-error>Minimum 1 mois</mat-error>
+        }
+      </mat-form-field>
+
+<!--      <mat-form-field appearance="outline">-->
+<!--        <mat-label>Montant TTC (DH)</mat-label>-->
+<!--        <input matInput type="number" formControlName="amountIncTax">-->
+
+<!--        @if (projectForm.get('amountIncTax')?.hasError('required')) {-->
+<!--          <mat-error>Requis</mat-error>-->
+<!--        }-->
+<!--      </mat-form-field>-->
+    </div>
+
+    <!-- Ligne 4 : Délais & Date -->
+    <div class="row-2-col">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Date de démarrage</mat-label>
+        <!-- On renomme en startPicker -->
+        <input matInput [matDatepicker]="startPicker" formControlName="startDate">
+        <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+
+        @if (projectForm.get('startDate')?.hasError('required')) {
+          <mat-error>Date requise</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Date d'obtention du marché</mat-label>
+        <!-- On renomme en winPicker -->
+        <input matInput [matDatepicker]="winPicker" formControlName="projectWinDate">
+        <mat-datepicker-toggle matIconSuffix [for]="winPicker"></mat-datepicker-toggle>
+        <mat-datepicker #winPicker></mat-datepicker>
+      </mat-form-field>
+
+    </div>
+
+    <!-- Ligne 5 : Objectifs Généraux -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Objectifs Généraux (Intro Rapport)</mat-label>
+      <textarea matInput formControlName="generalObjectives" rows="3"
+                placeholder="Contexte global du projet..."></textarea>
+    </mat-form-field>
+
+    <!-- Ligne 6 : Objectifs Spécifiques -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Objectifs Spécifiques (Détails techniques)</mat-label>
+      <textarea matInput formControlName="specificObjectives" rows="3"
+                placeholder="Liste des missions spécifiques..."></textarea>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Annuler</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="projectForm.invalid">
+    {{ isEditMode ? 'ENREGISTRER' : 'CRÉER' }}
+  </button>
+</mat-dialog-actions>

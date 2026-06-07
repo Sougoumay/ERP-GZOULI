@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>{{ order ? 'Modifier l\'Ordre de Service' : 'Nouvel Ordre de Service' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="order-form"
+    style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;">
+
+    <div style="display: flex; gap: 15px;">
+      <!-- Type d'Ordre -->
+      <mat-form-field appearance="outline" style="flex: 1;">
+        <mat-label>Type d'Ordre</mat-label>
+        <mat-select formControlName="type">
+          <mat-option *ngFor="let t of orderTypes" [value]="t">{{ t }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Date d'effet -->
+      <mat-form-field appearance="outline" style="flex: 1;">
+        <mat-label>Date d'effet</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="effectiveDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <!-- Zone d'Upload Obligatoire (Restreint aux PDF) -->
+    <div class="file-upload-area" style="text-align: center;">
+      <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" hidden>
+
+      <button type="button" mat-stroked-button color="primary" (click)="fileInput.click()"
+        style="width: 100%; padding: 15px;">
+        <mat-icon>picture_as_pdf</mat-icon>
+        {{ selectedFile ? selectedFile.name : (order ? (order.fileKey ? 'Remplacer le justificatif actuel' : 'Joindre un
+        justificatif') : 'Joindre le justificatif (PDF Obligatoire)') }}
+      </button>
+
+      @if (!selectedFile && !order) {
+      <small style="color: red; display: block; margin-top: 5px;">Le document scanné est requis.</small>
+      }
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions style="display: flex; justify-content: space-between; padding: 0 24px 24px;">
+  <div>
+    @if (order) {
+    <button mat-button color="warn" (click)="deleteOrder()">Supprimer</button>
+    }
+  </div>
+  <div style="display: flex; gap: 8px;">
+    <button mat-button mat-dialog-close>Annuler</button>
+    <button mat-flat-button color="primary" (click)="onSubmit()"
+      [disabled]="form.invalid || (!order && !selectedFile) || isUploading">
+      {{ isUploading ? 'Enregistrement...' : (order ? 'Mettre à jour' : 'Valider l\'Ordre') }}
+    </button>
+  </div>
+</mat-dialog-actions>

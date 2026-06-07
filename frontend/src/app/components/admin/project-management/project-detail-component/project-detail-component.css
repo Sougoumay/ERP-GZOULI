@@ -1,0 +1,68 @@
+.container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* --- En-tête --- */
+.header-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 16px;
+}
+
+.title-block {
+  flex: 1; /* Prend tout l'espace disponible */
+}
+
+h1 {
+  color: #2a2ea8; /* Bleu GZouli */
+  font-size: 1.8rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* --- Badge Statut --- */
+.status-chip {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.status-chip.active {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.status-chip.inactive {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+/* --- Onglets --- */
+.tab-content {
+  padding-top: 24px;
+  min-height: 400px;
+}
+
+.loading-shade {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 400px; /* Ou la hauteur que tu souhaites */
+  gap: 16px;
+  color: #2a2ea8;
+}

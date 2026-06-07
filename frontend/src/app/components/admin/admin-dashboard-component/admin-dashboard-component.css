@@ -1,0 +1,248 @@
+/*!* --- Titres --- *!*/
+/*.dashboard-title { font-weight: 300; font-size: 28px; margin: 0; color: #333; }*/
+/*.date-badge {*/
+/*  background: #fff; border: 1px solid #ddd;*/
+/*  padding: 8px 16px; border-radius: 24px;*/
+/*  font-weight: 500; color: #555;*/
+/*  display: flex; align-items: center; gap: 8px;*/
+/*}*/
+
+/*!* --- GRILLE KPI RESPONSIVE --- *!*/
+/*.kpi-grid {*/
+/*  display: grid;*/
+/*  !**/
+/*     MAGIE CSS :*/
+/*     Crée autant de colonnes que possible.*/
+/*     Chaque carte fera minimum 240px, sinon elle passe à la ligne.*/
+/*     1fr signifie qu'elles se partagent l'espace restant équitablement.*/
+/*  *!*/
+/*  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));*/
+/*  gap: 20px; !* Espace entre les cartes *!*/
+/*  width: 100%;*/
+/*}*/
+
+/*!* --- Cartes KPIs --- *!*/
+/*.kpi-card {*/
+/*  height: 100%;*/
+/*  border-radius: 12px;*/
+/*  padding: 20px;*/
+/*  position: relative;*/
+/*  overflow: hidden;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: space-between;*/
+/*  min-height: 120px;*/
+/*  box-shadow: 0 4px 12px rgba(0,0,0,0.08);*/
+/*  transition: transform 0.2s;*/
+/*}*/
+/*.kpi-card:hover { transform: translateY(-3px); }*/
+
+/*!* Couleurs & Dégradés *!*/
+/*.bg-light-blue { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }*/
+/*.bg-gradient-success { background: linear-gradient(135deg, #43a047, #66bb6a); color: white; }*/
+/*.bg-gradient-warning { background: linear-gradient(135deg, #fb8c00, #ffa726); color: white; }*/
+/*.bg-gradient-primary { background: linear-gradient(135deg, #1565c0, #42a5f5); color: white; }*/
+
+/*.kpi-content { z-index: 2; display: flex; flex-direction: column; }*/
+/*.kpi-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9; margin-bottom: 5px; }*/
+/*.kpi-value { font-size: 28px; font-weight: 700; margin: 0; line-height: 1.2; }*/
+/*.kpi-value-sm { font-size: 22px; font-weight: 700; margin: 0; line-height: 1.2; } !* Pour la carte 1 *!*/
+/*.kpi-sub { font-size: 11px; opacity: 0.85; margin-top: 4px; }*/
+
+/*.icon-circle {*/
+/*  background: rgba(255,255,255,0.2);*/
+/*  width: 50px; height: 50px;*/
+/*  border-radius: 50%;*/
+/*  display: flex; align-items: center; justify-content: center;*/
+/*}*/
+
+/*!* Cercle de % pour la carte 1 *!*/
+/*.completion-ring {*/
+/*  background: white; color: #1565c0;*/
+/*  width: 45px; height: 45px;*/
+/*  border-radius: 50%;*/
+/*  display: flex; align-items: center; justify-content: center;*/
+/*  font-weight: bold; font-size: 13px;*/
+/*  border: 3px solid #90caf9;*/
+/*}*/
+
+/*!* --- Tableau Météo --- *!*/
+/*.weather-section { background: white; border-radius: 8px; overflow: hidden; margin-top: 10px; }*/
+/*.weather-header { padding: 20px; border-bottom: 1px solid #eee; }*/
+/*.weather-header h3 { margin: 0; color: #3f51b5; font-size: 18px; display: flex; align-items: center; gap: 10px; }*/
+/*.text-small { font-size: 13px; color: #777; margin: 5px 0 0 34px; }*/
+
+/*.avatar-mini {*/
+/*  width: 36px; height: 36px;*/
+/*  background-color: #f0f0f0; color: #555;*/
+/*  border-radius: 50%;*/
+/*  display: flex; align-items: center; justify-content: center;*/
+/*  font-weight: bold; font-size: 14px;*/
+/*}*/
+
+/*.badge-role { font-size: 10px; color: #888; text-transform: uppercase; }*/
+
+/*!* Pilules de statut *!*/
+/*.status-pill {*/
+/*  padding: 4px 12px; border-radius: 12px;*/
+/*  font-size: 11px; font-weight: bold;*/
+/*  display: inline-flex; align-items: center; gap: 6px;*/
+/*}*/
+/*.status-pill.success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }*/
+/*.status-pill.danger { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }*/
+
+/*!* --- Loading Spinner --- *!*/
+/*.loading-container {*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  height: 400px; !* Hauteur suffisante pour centrer dans la page *!*/
+/*}*/
+
+/*!* Animation d'apparition douce *!*/
+/*.fade-in {*/
+/*  animation: fadeIn 0.5s ease-in;*/
+/*}*/
+
+/*@keyframes fadeIn {*/
+/*  from { opacity: 0; transform: translateY(10px); }*/
+/*  to { opacity: 1; transform: translateY(0); }*/
+/*}*/
+
+/* --- CONTENEUR GLOBAL --- */
+/* Empêche le chevauchement global en forçant une structure verticale stricte */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* Espace de sécurité insécable entre les sections */
+  padding: 24px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* --- EN-TÊTE --- */
+.dashboard-title {
+  font-weight: 300;
+  font-size: 28px;
+  margin: 0;
+  color: #333;
+}
+
+/* NOUVELLE CLASSE POUR LE SOUS-TITRE */
+.dashboard-subtitle {
+  font-size: 16px;        /* Plus grand (était ~12px avant) */
+  font-weight: 500;       /* Semi-bold (Un peu gras) */
+  color: #5c6bc0;         /* Une couleur légèrement bleutée/grise pour la visibilité */
+  margin-top: 5px;        /* Un peu d'espace avec le titre H1 */
+  margin-bottom: 0;       /* La marge externe est gérée par le container, mais on peut forcer si besoin */
+  opacity: 1;             /* On enlève la transparence */
+}
+
+/* On ajuste le conteneur du header pour qu'il pousse bien le reste vers le bas */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px; /* AJOUT : Espace supplémentaire sous tout le header */
+  border-bottom: 1px solid #eee; /* OPTIONNEL : Une ligne fine comme pour la Météo */
+  padding-bottom: 15px;          /* OPTIONNEL : Espace avant la ligne */
+}
+
+.date-badge {
+  background: white;
+  border: 1px solid #e0e0e0;
+  padding: 8px 16px;
+  border-radius: 24px;
+  color: #555;
+  font-weight: 500;
+  white-space: nowrap; /* Empêche la date de se casser */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --- GRILLE KPI (La correction demandée) --- */
+.kpi-grid {
+  display: grid;
+  /*
+     MAGIE CSS :
+     - 'auto-fit' : Met autant de colonnes que possible sur une ligne.
+     - 'minmax(260px, 1fr)' : Chaque carte fait au moins 260px.
+       Si l'écran fait 1920px, elles seront toutes sur une ligne.
+       Si l'écran fait 1000px, elles passeront sur 2 lignes automatiquement.
+  */
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+/* Style des Cartes */
+.kpi-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 140px; /* Hauteur minimale pour l'uniformité */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kpi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+
+/* Couleurs des cartes (Issues de vos sources) */
+.bg-light-blue { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
+.bg-gradient-success { background: linear-gradient(135deg, #43a047, #66bb6a); color: white; }
+.bg-gradient-warning { background: linear-gradient(135deg, #fb8c00, #ffa726); color: white; }
+.bg-gradient-primary { background: linear-gradient(135deg, #1565c0, #42a5f5); color: white; }
+
+/* Typographie KPI */
+.kpi-content { z-index: 2; position: relative; }
+.kpi-label { font-size: 11px; text-transform: uppercase; font-weight: 600; opacity: 0.9; margin-bottom: 8px; display: block; letter-spacing: 0.5px; }
+.kpi-value { font-size: 28px; font-weight: 800; margin: 0; line-height: 1.1; }
+.kpi-sub { font-size: 12px; opacity: 0.8; margin-top: 6px; display: block; }
+
+/* Icônes de fond */
+.icon-circle {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background: rgba(255,255,255,0.2);
+  width: 45px; height: 45px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* --- SECTION MÉTÉO (Le Tableau) --- */
+.weather-section {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden; /* Important pour que le tableau ne déborde pas */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.weather-header {
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.weather-header h3 { margin: 0; font-size: 18px; color: #3f51b5; display: flex; align-items: center; gap: 10px; }
+
+/* --- SPINNER --- */
+.loading-container {
+  height: 60vh; /* Centre verticalement */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

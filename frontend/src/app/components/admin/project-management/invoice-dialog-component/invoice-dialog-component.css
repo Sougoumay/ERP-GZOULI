@@ -1,0 +1,73 @@
+/* Espacement global du formulaire */
+.invoice-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+/* Organisation en lignes (2 colonnes) */
+.row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start; /* Aligne les champs en haut */
+}
+
+/* Force les champs à prendre 50% de la largeur chacun */
+.row mat-form-field {
+  flex: 1;
+}
+
+/* Ajustement vertical pour la case à cocher pour l'aligner avec le champ input */
+.certif-check {
+  flex: 1;
+  margin-top: 10px; /* Petit décalage pour centrer visuellement avec le champ Montant */
+  font-weight: 500;
+}
+
+/* --- Zone d'Upload (Fichier) --- */
+.file-upload-area {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Le bouton qui remplace l'input file moche */
+.upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 16px;
+  border: 2px dashed #ccc; /* Bordure en pointillés */
+  border-radius: 8px;
+  background-color: #fafafa;
+  cursor: pointer;
+  color: #555;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+/* Effet au survol */
+.upload-btn:hover {
+  background-color: #e3f2fd; /* Fond bleu très clair */
+  border-color: #2196f3;     /* Bordure bleue */
+  color: #1976d2;
+}
+
+/* Icône dans le bouton */
+.upload-btn mat-icon {
+  font-size: 24px;
+  height: 24px;
+  width: 24px;
+}
+
+/* Message d'erreur rouge */
+.error-text {
+  color: #f44336;
+  font-size: 12px;
+  margin-top: 8px;
+  align-self: flex-start; /* Aligné à gauche */
+}

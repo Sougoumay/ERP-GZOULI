@@ -1,0 +1,119 @@
+.journal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 10px;
+}
+
+/* Style des grands blocs */
+.form-section {
+  background: #f8fafc; /* Gris/Bleu très léger */
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+/* En-têtes des blocs */
+.section-header, .section-header-flex {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 10px;
+}
+
+.section-header-flex {
+  justify-content: space-between;
+}
+
+.title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title-group h3, .section-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Mise en page des formulaires */
+.row {
+  display: flex;
+  gap: 16px;
+}
+
+.row mat-form-field {
+  flex: 1; /* Prend 1/3 de l'espace sur PC */
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Affichage de la grille des PVs */
+.file-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  gap: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.file-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;
+}
+
+/* Affichage des lignes de Photos (Spécifique PC) */
+.photo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.photo-item-row {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  gap: 20px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.photo-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 250px; /* Largeur fixe pour que tous les champs textes soient alignés verticalement */
+}
+
+.photo-desc-input {
+  flex: 1;
+  margin-bottom: -1.25em; /* Annule l'espace vide par défaut en bas des mat-form-field */
+}
+
+.empty-text {
+  font-size: 13px;
+  color: #94a3b8;
+  font-style: italic;
+  margin: 10px 0 0 0;
+}

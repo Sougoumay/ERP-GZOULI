@@ -1,0 +1,19 @@
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Force les deux champs de date à se partager l'espace (50/50) */
+.row {
+  display: flex;
+  gap: 16px;
+}
+.row mat-form-field {
+  flex: 1;
+}

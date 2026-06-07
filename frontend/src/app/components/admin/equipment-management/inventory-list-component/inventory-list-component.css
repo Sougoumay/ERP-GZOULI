@@ -1,0 +1,24 @@
+.inventory-container { padding: 20px; }
+
+.header-row {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+}
+.header-row h1 { margin: 0; font-size: 24px; color: #3f51b5; }
+.header-row p { margin: 0; color: #666; }
+
+.search-field { width: 100%; margin-bottom: 10px; background: white; }
+
+.fw-bold { font-weight: 500; }
+
+/* Badges État */
+.state-badge {
+  padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;
+}
+.state-badge.NEUF { background: #e8f5e9; color: #2e7d32; }
+.state-badge.BON { background: #e3f2fd; color: #1565c0; }
+.state-badge.MOYEN { background: #fff3e0; color: #ef6c00; }
+.state-badge.EN_PANNE, .state-badge.HORS_SERVICE { background: #ffebee; color: #c62828; }
+
+/* Statuts Disponibilité */
+.status-available { color: #2e7d32; font-weight: 500; display: flex; align-items: center; gap: 5px; }
+.status-busy { color: #f57c00; font-weight: 500; display: flex; align-items: center; gap: 5px; }

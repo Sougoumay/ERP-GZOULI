@@ -1,0 +1,63 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <div class="logo-wrapper">
+      <img ngSrc="assets/logo-gzouli.jpg" alt="Logo GZouli" class="app-logo" height="80" width="80">
+      <h2 class="title">GZouli Ingénieur Conseil</h2>
+      <p class="subtitle">Gestion de Projets BTP</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+      <!-- Champ Email -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="nom@gzouli.com" type="email">
+        <mat-icon matSuffix>email</mat-icon>
+        @if (loginForm.get('email')?.hasError('required')) {
+          <mat-error>L'email est requis</mat-error>
+        }
+        @if (loginForm.get('email')?.hasError('email')) {
+          <mat-error>Format d'email invalide</mat-error>
+        }
+
+      </mat-form-field>
+
+      <!-- Champ Mot de passe -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+          <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        @if(loginForm.get('password')?.hasError('required')) {
+          <mat-error>Le mot de passe est requis</mat-error>
+        }
+      </mat-form-field>
+
+      @if(errorMessage) {
+        <div class="error-message">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <div class="forgot-password-wrapper">
+        <a routerLink="/auth/forgot-password" class="forgot-link">
+          Mot de passe oublié ?
+        </a>
+      </div>
+
+      <button mat-raised-button color="primary" class="login-button"
+              [disabled]="loginForm.invalid || isLoading">
+        @if (!isLoading) {
+          <span>SE CONNECTER</span>
+        }
+        @if (isLoading) {
+          <mat-spinner diameter="20"></mat-spinner>
+        }
+      </button>
+    </form>
+
+    <div class="footer">
+      <p>© 2024 GZouli Ingénieur Conseil</p>
+    </div>
+  </mat-card>
+</div>
