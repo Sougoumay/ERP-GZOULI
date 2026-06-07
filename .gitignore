@@ -16,3 +16,18 @@ Thumbs.db
 
 # PDF specs (optionnel — retire si tu veux les versionner)
 *.pdf
+
+
+# Terraform
+
+# Bloquer le dossier de travail local de Terraform (contient les plugins binaires)
+.terraform/
+
+# Bloquer les fichiers de crash log si Terraform rencontre une erreur critique
+crash.log
+crash.*.log
+
+# Bloquer les fichiers de variables locales qui contiennent des secrets
+*.tfvars
+*.tfvars.json
+*.tfbackend
