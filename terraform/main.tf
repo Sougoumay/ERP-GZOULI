@@ -25,3 +25,7 @@ module "sg" {
   source = "./security-groups"
   main_vpc_id = module.networking.main_vpc_id
 }
+
+module "ecr" {
+  source                = "./ecr"
+}

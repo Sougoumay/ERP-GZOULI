@@ -41,3 +41,27 @@ output "main_vpc_arn" {
 output "main_vpc_id" {
   value = module.networking.main_vpc_id
 }
+
+output "gzouli_rds_sg_id" {
+  value = module.sg.gzouli_rds_sg_id
+}
+
+output "gzouli_ecs_sg_id" {
+  value = module.sg.gzouli_ecs_sg_id
+}
+
+output "gzouli_alb_sg_id" {
+  value = module.sg.gzouli_alb_sg_id
+}
+
+output "gzouli_ecr_repo_arn" {
+  value = module.ecr.gzouli_ecr_repo_arn
+}
+
+output "gzouli_ecr_register_id" {
+  value = module.ecr.gzouli_ecr_register_id
+}
+
+output "gzouli_ecr_repo_url" {
+  value = module.ecr.gzouli_ecr_repo_url
+}
