@@ -33,3 +33,11 @@ output "pv_subnet1_arn" {
 output "pv_subnet2_arn" {
   value = module.networking.pv_subnet2_arn
 }
+
+output "main_vpc_arn" {
+  value = module.networking.main_vpc_arn
+}
+
+output "main_vpc_id" {
+  value = module.networking.main_vpc_id
+}

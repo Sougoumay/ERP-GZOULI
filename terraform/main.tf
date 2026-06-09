@@ -20,3 +20,8 @@ module "networking" {
   private_subnet_2_cidr = var.private_subnet_2_cidr
   region                = var.region
 }
+
+module "sg" {
+  source = "./security-groups"
+  main_vpc_id = module.networking.main_vpc_id
+}

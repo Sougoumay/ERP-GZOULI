@@ -18,6 +18,10 @@ output "main_vpc_arn" {
   value = aws_vpc.gzouli_vpc.arn
 }
 
+output "main_vpc_id" {
+  value = aws_vpc.gzouli_vpc.id
+}
+
 output "pb_subnet1_arn" {
   value = aws_subnet.gzouli_pb_subnet_1.arn
 }
