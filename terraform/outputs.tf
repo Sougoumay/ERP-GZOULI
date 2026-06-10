@@ -14,9 +14,9 @@ output "gzouli_ecs_task_role_name" {
   value =  module.iam.gzouli_ecs_task_role_name
 }
 
-output "gzouli_secret_manager_arn" {
-  value = module.secrets_manager.secret_manager_arn
-}
+# output "gzouli_secret_manager_arn" {
+#   value = module.secrets_manager.secret_manager_arn
+# }
 
 output "pb_subnet1_arn" {
   value = module.networking.pb_subnet1_arn
@@ -64,4 +64,8 @@ output "gzouli_ecr_register_id" {
 
 output "gzouli_ecr_repo_url" {
   value = module.ecr.gzouli_ecr_repo_url
+}
+
+output "gzouli_ecs_cluster_arn" {
+  value = module.ecs.gzouli_ecs_cluster_arn
 }

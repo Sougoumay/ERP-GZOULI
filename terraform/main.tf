@@ -5,9 +5,9 @@ module "iam" {
   secret_manager_arn = module.secrets_manager.secret_manager_arn
 }
 
-module "secrets_manager" {
-  source = "./secrets-manager"
-}
+# module "secrets_manager" {
+#   source = "./secrets-manager"
+# }
 
 module "networking" {
   source                = "./networking"
@@ -28,4 +28,8 @@ module "sg" {
 
 module "ecr" {
   source                = "./ecr"
+}
+
+module "ecs" {
+  source                = "./ecs"
 }
