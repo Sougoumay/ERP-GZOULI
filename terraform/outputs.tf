@@ -14,9 +14,9 @@ output "gzouli_ecs_task_role_name" {
   value =  module.iam.gzouli_ecs_task_role_name
 }
 
-# output "gzouli_secret_manager_arn" {
-#   value = module.secrets_manager.secret_manager_arn
-# }
+output "gzouli_secret_manager_arn" {
+  value = module.secrets_manager.secret_manager_arn
+}
 
 output "pb_subnet1_arn" {
   value = module.networking.pb_subnet1_arn

@@ -36,11 +36,51 @@ resource "aws_ecs_task_definition" "gzouli_ecs_task_definition" {
 
   container_definitions = jsonencode([
     {
-      name   = "gzouli_ecs_service"
-      image  = ""
-      cpu    = 1024
-      memory = 2048
+      name      = "gzouli-backend"
+      image     = var.backend_ecr_image_uri
+      cpu          = var.cpu
+      memory       = var.memory
+      essential = true
 
+      portMappings = [
+        {
+          containerPort = 8080
+          hostPort      = 80
+          protocol      = "tcp"
+        }
+      ]
+
+      # environment = [
+      #   { name = "SPRING_PROFILES_ACTIVE", value = "prod" },
+      #   { name = "AWS_REGION",             value = var.region },
+      #   { name = "DB_HOST",                value = var.rds_endpoint }, // TODO : créer la BDD au préalable
+      #   { name = "DB_PORT",                value = "5432" },
+      #   { name = "DB_NAME",                value = "gzouli" }
+      # ]
+      #
+      # secrets = [ // TODO : cognito et BDD à créer au préalable
+      #   { name = "DB_USER",     valueFrom = "${var.db_credentials_arn}:username::" },
+      #   { name = "DB_PASSWORD", valueFrom = "${var.db_credentials_arn}:password::" },
+      #   { name = "AWS_COGNITO_USER_POOL_ID",  valueFrom = "${var.cognito_arn}:user_pool_id::" },
+      #   { name = "AWS_COGNITO_APP_CLIENT_ID", valueFrom = "${var.cognito_arn}:client_id::" }
+      # ]
+
+      healthCheck = {
+        command     = ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+        interval    = 10
+        retries     = 5
+        startPeriod = 20
+        timeout     = 5
+      }
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/gzouli/backend"
+          "awslogs-region"        = var.region
+          "awslogs-stream-prefix" = "backend"
+        }
+      }
     }
-  ])
+    ])
 }

@@ -5,9 +5,9 @@ module "iam" {
   secret_manager_arn = module.secrets_manager.secret_manager_arn
 }
 
-# module "secrets_manager" {
-#   source = "./secrets-manager"
-# }
+module "secrets_manager" {
+  source = "./secrets-manager"
+}
 
 module "networking" {
   source                = "./networking"
@@ -32,4 +32,17 @@ module "ecr" {
 
 module "ecs" {
   source                = "./ecs"
+  region                = var.region
+  cpu                   = 512
+  memory                = 1024
+  execution_role_arn    = module.iam.gzouli_ecs_execution_role_arn
+  task_role_arn         = module.iam.gzouli_ecs_task_role_arn
+  backend_ecr_image_uri = ""
+
+
+  // TODO : resource à créer
+  cognito_arn           = ""
+  rds_endpoint          = ""
+  db_credentials_arn    = ""
+  gzouli_s3_bucket_name = ""
 }

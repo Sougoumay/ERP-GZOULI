@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "gzouli_secret_manager" {
-  name = "gzouli_prod_db_credentials"
+  name = "gzouli_prod_db_credentials_2"
 
 
   tags = {
