@@ -48,3 +48,21 @@ variable "gzouli_s3_bucket_name" {
   type = string
   description = "Le nom du bu bucket s3 dans lequel l'application dépose les dossiers"
 }
+
+variable "private_subnet_1_id" {
+  type = string
+}
+
+variable "private_subnet_2_id" {
+  type = string
+}
+
+variable "gzouli_ecs_sg_id" {
+  type = string
+  description = "L'ID de la SG qui gère l'accès au service"
+}
+
+variable "alb_target_group_arn" {
+  type = string
+  description = "l'ARN de load balancer qui gère le traffic"
+}

@@ -50,20 +50,20 @@ resource "aws_ecs_task_definition" "gzouli_ecs_task_definition" {
         }
       ]
 
-      # environment = [
-      #   { name = "SPRING_PROFILES_ACTIVE", value = "prod" },
-      #   { name = "AWS_REGION",             value = var.region },
-      #   { name = "DB_HOST",                value = var.rds_endpoint }, // TODO : créer la BDD au préalable
-      #   { name = "DB_PORT",                value = "5432" },
-      #   { name = "DB_NAME",                value = "gzouli" }
-      # ]
-      #
-      # secrets = [ // TODO : cognito et BDD à créer au préalable
-      #   { name = "DB_USER",     valueFrom = "${var.db_credentials_arn}:username::" },
-      #   { name = "DB_PASSWORD", valueFrom = "${var.db_credentials_arn}:password::" },
-      #   { name = "AWS_COGNITO_USER_POOL_ID",  valueFrom = "${var.cognito_arn}:user_pool_id::" },
-      #   { name = "AWS_COGNITO_APP_CLIENT_ID", valueFrom = "${var.cognito_arn}:client_id::" }
-      # ]
+      environment = [
+        { name = "SPRING_PROFILES_ACTIVE", value = "prod" },
+        { name = "AWS_REGION",             value = var.region },
+        { name = "DB_HOST",                value = var.rds_endpoint },
+        { name = "DB_PORT",                value = "5432" },
+        { name = "DB_NAME",                value = "gzouli" }
+      ]
+
+      secrets = [ // TODO : cognito à créer au préalable
+        { name = "DB_USER",     valueFrom = "${var.db_credentials_arn}:username::" },
+        { name = "DB_PASSWORD", valueFrom = "${var.db_credentials_arn}:password::" },
+        # { name = "AWS_COGNITO_USER_POOL_ID",  valueFrom = "${var.cognito_arn}:user_pool_id::" },
+        # { name = "AWS_COGNITO_APP_CLIENT_ID", valueFrom = "${var.cognito_arn}:client_id::" }
+      ]
 
       healthCheck = {
         command     = ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
@@ -76,11 +76,31 @@ resource "aws_ecs_task_definition" "gzouli_ecs_task_definition" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = "/ecs/gzouli/backend"
+          "awslogs-group"         = "/ecs/gzouli/backend"  // TODO : cloud watch avec le log group à créer
           "awslogs-region"        = var.region
           "awslogs-stream-prefix" = "backend"
         }
       }
     }
     ])
+}
+
+resource "aws_ecs_service" "gzouli_ecs_service" {
+  name            = "gzouli-service"
+  cluster         = aws_ecs_cluster.gzouli_ecs_cluster.id
+  task_definition = aws_ecs_task_definition.gzouli_ecs_task_definition.arn
+  desired_count   = 2   # 2 tasks pour la HA
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets          = [var.private_subnet_1_id, var.private_subnet_2_id]
+    security_groups  = [var.gzouli_ecs_sg_id]
+    assign_public_ip = false
+  }
+
+  load_balancer {
+    target_group_arn = var.alb_target_group_arn
+    container_name   = "gzouli-backend"
+    container_port   = 8080
+  }
 }
