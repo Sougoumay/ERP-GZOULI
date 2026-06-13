@@ -36,7 +36,7 @@ public class CognitoServiceImpl implements CognitoService {
     public String createCognitoUser(String email, String firstName, String lastName, String roleName) {
         try {
             // 1. Création User
-            String tempPassword = "Default$$$123"; // Ou générateur aléatoire
+            String tempPassword = generateStrongPassword();
 
             AdminCreateUserRequest userRequest = AdminCreateUserRequest.builder()
                     .userPoolId(userPoolId)
