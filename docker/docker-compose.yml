@@ -14,12 +14,13 @@ services:
       - DB_NAME=${GZOULI_DB_NAME}
       - SPRING_PROFILES_ACTIVE=docker
       - AWS_REGION=${AWS_REGION}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_PROFILE=gzouli-local
       - AWS_COGNITO_USER_POOL_ID=${AWS_COGNITO_USER_POOL_ID}
       - AWS_COGNITO_APP_CLIENT_ID=${AWS_COGNITO_APP_CLIENT_ID}
       - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
       - NVD_API_KEY=${NVD_API_KEY}
+    volumes:
+      - $HOME/.aws:/root/.aws:ro
     depends_on:
       db :
         condition: service_healthy

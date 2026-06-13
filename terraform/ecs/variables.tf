@@ -39,9 +39,9 @@ variable "db_credentials_arn" {
   description = "L'arn de la BDD"
 }
 
-variable "cognito_arn" {
-  type = string
-  description = "L'arn de l'instance cognito utilisé pour l'authentification"
+variable "cognito_user_pool_id" {
+  type        = string
+  description = "L'ID du User Pool Cognito — injecté comme variable d'environnement pour Spring Security (jwt.issuer-uri)"
 }
 
 variable "gzouli_s3_bucket_name" {

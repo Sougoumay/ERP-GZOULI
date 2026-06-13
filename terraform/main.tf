@@ -40,8 +40,7 @@ module "ecs" {
   backend_ecr_image_uri = ""
 
 
-  // TODO : resource à créer
-  cognito_arn           = ""
+  cognito_user_pool_id  = module.cognito.user_pool_id
   rds_endpoint          = module.rds.rds_endpoint
   db_credentials_arn    = module.rds.rds_secret_arn
   gzouli_s3_bucket_name = ""
@@ -56,4 +55,11 @@ module "rds" {
   private_subnet_1_id = module.networking.private_subnet_1_id
   private_subnet_2_id = module.networking.private_subnet_2_id
   gzouli_rds_sg_id   = module.sg.gzouli_rds_sg_id
+}
+
+module "cognito" {
+  source = "./cognito"
+
+  app_name = "gzouli"
+  region   = var.region
 }

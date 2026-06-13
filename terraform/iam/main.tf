@@ -123,9 +123,14 @@ resource "aws_iam_policy" "gzouli_ecs_task_policy" {
 
       # Permettre à l'application d'interagir avec cognito pour la gestion des utilisateurs
       {
-        Sid      = "AllowECSActWithCognito"
-        Effect   = "Allow"
-        Action   = ["cognito-idp:AdminGetUser", "cognito-idp:ListUsers"]
+        Sid    = "AllowECSActWithCognito"
+        Effect = "Allow"
+        Action = [
+          "cognito-idp:AdminCreateUser",       # createCognitoUser()
+          "cognito-idp:AdminAddUserToGroup",   # createCognitoUser() — ajout au groupe ROLE
+          "cognito-idp:AdminDisableUser",      # disableUser()
+          "cognito-idp:AdminEnableUser"        # enableUser()
+        ]
         Resource = "*" # À restreindre avec l'ARN de User Pool Cognito // TODO
       },
 
