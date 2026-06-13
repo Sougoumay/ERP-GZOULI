@@ -55,14 +55,13 @@ resource "aws_ecs_task_definition" "gzouli_ecs_task_definition" {
         { name = "AWS_REGION",             value = var.region },
         { name = "DB_HOST",                value = var.rds_endpoint },
         { name = "DB_PORT",                value = "5432" },
-        { name = "DB_NAME",                value = "gzouli" }
+        { name = "DB_NAME",                value = "gzouli" },
+        { name = "AWS_COGNITO_USER_POOL_ID", value = var.cognito_user_pool_id }
       ]
 
-      secrets = [ // TODO : cognito à créer au préalable
+      secrets = [
         { name = "DB_USER",     valueFrom = "${var.db_credentials_arn}:username::" },
-        { name = "DB_PASSWORD", valueFrom = "${var.db_credentials_arn}:password::" },
-        # { name = "AWS_COGNITO_USER_POOL_ID",  valueFrom = "${var.cognito_arn}:user_pool_id::" },
-        # { name = "AWS_COGNITO_APP_CLIENT_ID", valueFrom = "${var.cognito_arn}:client_id::" }
+        { name = "DB_PASSWORD", valueFrom = "${var.db_credentials_arn}:password::" }
       ]
 
       healthCheck = {
@@ -76,13 +75,18 @@ resource "aws_ecs_task_definition" "gzouli_ecs_task_definition" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = "/ecs/gzouli/backend"  // TODO : cloud watch avec le log group à créer
+          "awslogs-group"         = "/ecs/gzouli/backend"
           "awslogs-region"        = var.region
           "awslogs-stream-prefix" = "backend"
         }
       }
     }
     ])
+
+    tags = {
+      Name = "gzouli_ecs_task_definition"
+      Project = "gzouli"
+    }
 }
 
 resource "aws_ecs_service" "gzouli_ecs_service" {
@@ -102,5 +106,10 @@ resource "aws_ecs_service" "gzouli_ecs_service" {
     target_group_arn = var.alb_target_group_arn
     container_name   = "gzouli-backend"
     container_port   = 8080
+  }
+
+  tags = {
+    Name = "gzouli_ecs_service"
+    Project = "gzouli"
   }
 }
