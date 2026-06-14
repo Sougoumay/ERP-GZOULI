@@ -41,3 +41,8 @@ variable "pb_subnet_2_cidr" {
   type = string
   description = "La plage d'adresse IP du subnet public de az2"
 }
+
+variable "domain_name" {
+  type        = string
+  description = "Le sous-domaine de l'application (ex: gzouli.sougoumay.com)"
+}

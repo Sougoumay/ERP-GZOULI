@@ -77,6 +77,22 @@ output "gzouli_ecs_cluster_arn" {
   value = try(one(module.ecs).gzouli_ecs_cluster_arn, null)
 }
 
+output "alb_certificate_arn" {
+  description = "ARN du certificat ACM pour l'ALB (eu-west-3)"
+  value       = try(one(module.acm).alb_certificate_arn, null)
+}
+
+output "cloudfront_certificate_arn" {
+  description = "ARN du certificat ACM pour CloudFront (us-east-1)"
+  value       = try(one(module.acm).cloudfront_certificate_arn, null)
+}
+
+output "cname_validation_records" {
+  description = "Enregistrements CNAME à ajouter manuellement dans OVH"
+  value       = try(one(module.acm).cname_validation_records, null)
+}
+
+
 ################################################################
 ## Outputs local uniquement
 ################################################################
@@ -84,3 +100,6 @@ output "local_dev_user_name" {
   description = "Nom du user IAM local — crée ses clés d'accès dans la console AWS"
   value       = try(one(module.iam_local).local_dev_user_name, null)
 }
+
+
+

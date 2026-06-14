@@ -32,6 +32,18 @@ module "s3" {
 ## try(one(module.xxx).output, "") → renvoie "" si le module
 ##   n'existe pas, évite les erreurs de référence croisée
 ################################################################
+module "acm" {
+  count  = local.is_prod ? 1 : 0
+  source = "./acm"
+
+  providers = {
+    aws           = aws
+    aws.us_east_1 = aws.us_east_1
+  }
+
+  domain_name = "gzouli.sougoumay.com"
+}
+
 module "secrets_manager" {
   count  = local.is_prod ? 1 : 0
   source = "./secrets-manager"
