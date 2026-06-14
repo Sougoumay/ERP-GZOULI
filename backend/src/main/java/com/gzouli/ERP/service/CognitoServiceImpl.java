@@ -21,7 +21,9 @@ public class CognitoServiceImpl implements CognitoService {
     private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
     private static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String DIGITS = "0123456789";
-    private static final String SPECIAL = "!@#$%^&*()-_=+[]{}|;:,.<>?";
+    // < > & " ' exclus car les clients email les encodent en entités HTML (&gt; etc.)
+    // ce qui rend le mot de passe illisible quand copié depuis l'email d'invitation
+    private static final String SPECIAL = "!@#$%^*()-_=+{}|;:,.";
     private static final int PASSWORD_LENGTH = 12;
     private static final SecureRandom random = new SecureRandom();
 
@@ -48,7 +50,6 @@ public class CognitoServiceImpl implements CognitoService {
                             AttributeType.builder().name("given_name").value(firstName).build(),
                             AttributeType.builder().name("family_name").value(lastName).build()
                     )
-                    .messageAction(MessageActionType.SUPPRESS)
                     .build();
 
             AdminCreateUserResponse response = cognitoClient.adminCreateUser(userRequest);

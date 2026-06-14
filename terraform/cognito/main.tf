@@ -2,7 +2,8 @@
 ## User Pool
 ################################################################
 resource "aws_cognito_user_pool" "gzouli_user_pool" {
-  name = "${var.app_name}-user-pool"
+  # local → gzouli-user-pool-local / prod → gzouli-user-pool-prod
+  name = "${var.app_name}-user-pool-${var.environment}"
 
   # Les utilisateurs se connectent avec leur email (pas un username arbitraire)
   username_attributes      = ["email"]
@@ -109,21 +110,21 @@ resource "aws_cognito_user_pool_client" "gzouli_app_client" {
 ## Utilisés par AdminAddUserToGroup dans CognitoServiceImpl
 ## et lus via le claim "cognito:groups" dans SecurityConfig
 ################################################################
-resource "aws_cognito_user_pool_group" "admin" {
+resource "aws_cognito_user_group" "admin" {
   name         = "ADMIN"
   user_pool_id = aws_cognito_user_pool.gzouli_user_pool.id
   description  = "Administrateurs de l'ERP — accès complet"
   precedence   = 1
 }
 
-resource "aws_cognito_user_pool_group" "ingenieur" {
+resource "aws_cognito_user_group" "ingenieur" {
   name         = "INGENIEUR"
   user_pool_id = aws_cognito_user_pool.gzouli_user_pool.id
   description  = "Ingénieurs — gestion de projets et supervision"
   precedence   = 2
 }
 
-resource "aws_cognito_user_pool_group" "technicien" {
+resource "aws_cognito_user_group" "technicien" {
   name         = "TECHNICIEN"
   user_pool_id = aws_cognito_user_pool.gzouli_user_pool.id
   description  = "Techniciens — exécution des tâches terrain"

@@ -27,14 +27,11 @@ public class DataInitializer implements CommandLineRunner {
                System.out.println("Création automatique de l'Administrateur Principal...");
 
                EmployeeRegistrationDTO adminDto = getEmployeeRegistrationDTO(adminEmail);
-
-               // Appel du service que nous avons codé ensemble :
-               // Il va créer le user dans Cognito ET dans la BDD locale
                employeeService.createEmployee(adminDto);
 
-               System.out.println("Admin créé avec succès. Mot de passe temporaire : Default$$$123");
+               System.out.println("Admin créé avec succès. Un email d'invitation a été envoyé à : " + adminEmail);
            } catch (Exception e) {
-               System.out.println("Une erreur s'est produit lors de la création de l'utilisateur");
+               System.err.println("Échec de la création de l'admin : " + e.getMessage());
            }
         }
     }

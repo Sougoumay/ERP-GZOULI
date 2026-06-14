@@ -4,6 +4,11 @@ variable "app_name" {
   default     = "gzouli"
 }
 
+variable "environment" {
+  type        = string
+  description = "Le workspace actif — utilisé dans le nom du User Pool pour distinguer local/prod"
+}
+
 variable "region" {
   type        = string
   description = "La région AWS dans laquelle Cognito est déployé"
