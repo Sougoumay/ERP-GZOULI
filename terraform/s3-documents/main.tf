@@ -29,6 +29,20 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "gzouli_bucket_enc
   }
 }
 
+# Autorise le navigateur à faire des requêtes directes vers S3 avec une URL présignée.
+resource "aws_s3_bucket_cors_configuration" "gzouli_bucket_cors" {
+  bucket = aws_s3_bucket.gzouli_bucket.id
+
+  cors_rule {
+    allowed_methods = ["GET", "HEAD"]
+    allowed_origins = var.frontend_origins
+    allowed_headers = ["*"]
+    expose_headers  = ["ETag", "Content-Disposition", "Content-Length", "Content-Type"]
+    # Cache le résultat du preflight 1h pour éviter une requête OPTIONS avant chaque téléchargement
+    max_age_seconds = 3600
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "gzouli_bucket_access" {
   bucket = aws_s3_bucket.gzouli_bucket.id
 

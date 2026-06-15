@@ -46,3 +46,8 @@ variable "domain_name" {
   type        = string
   description = "Le sous-domaine de l'application (ex: gzouli.sougoumay.com)"
 }
+
+variable "frontend_origins" {
+  type        = list(string)
+  description = "Origines Angular autorisées à accéder au bucket S3 via URL présignée"
+}

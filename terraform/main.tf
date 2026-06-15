@@ -20,9 +20,10 @@ module "cognito" {
 }
 
 module "s3" {
-  source      = "./s3-documents"
-  app_name    = "gzouli"
-  environment = terraform.workspace
+  source           = "./s3-documents"
+  app_name         = "gzouli"
+  environment      = terraform.workspace
+  frontend_origins = var.frontend_origins
 }
 
 ################################################################
