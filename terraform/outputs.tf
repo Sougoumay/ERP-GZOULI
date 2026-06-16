@@ -87,6 +87,17 @@ output "cloudfront_certificate_arn" {
   value       = try(one(module.acm).cloudfront_certificate_arn, null)
 }
 
+# À renseigner comme origin_domain_name dans la distribution CloudFront
+output "frontend_bucket_regional_domain_name" {
+  description = "Domain name S3 régional à utiliser comme origin CloudFront (OAC)"
+  value       = try(one(module.s3_frontend).bucket_regional_domain_name, null)
+}
+
+output "frontend_bucket_arn" {
+  description = "ARN du bucket frontend — nécessaire pour la bucket policy OAC"
+  value       = try(one(module.s3_frontend).bucket_arn, null)
+}
+
 output "cname_validation_records" {
   description = "Enregistrements CNAME à ajouter manuellement dans OVH"
   value       = try(one(module.acm).cname_validation_records, null)

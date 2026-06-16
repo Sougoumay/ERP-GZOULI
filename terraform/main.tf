@@ -54,8 +54,14 @@ module "iam" {
   count  = local.is_prod ? 1 : 0
   source = "./iam"
 
-  region             = var.region
   secret_manager_arn = try(one(module.secrets_manager).secret_manager_arn, "")
+
+  # Laisser null jusqu'à la création de CloudFront — la bucket policy sera appliquée
+  # lors d'un second apply après avoir passé l'ARN de la distribution ici.
+  cloudfront_distribution_arn = null
+
+  gzouli_frontend_arn = one(module.s3_frontend).bucket_arn
+  gzouli_frontend_id  = one(module.s3_frontend).bucket_id
 }
 
 module "networking" {
@@ -111,6 +117,15 @@ module "ecs" {
   gzouli_ecs_sg_id      = try(one(module.sg).gzouli_ecs_sg_id, "")
   private_subnet_1_id   = try(one(module.networking).private_subnet_1_id, "")
   private_subnet_2_id   = try(one(module.networking).private_subnet_2_id, "")
+}
+
+module "s3_frontend" {
+  count       = local.is_prod ? 1 : 0
+  source      = "./s3-frontend"
+  app_name    = "gzouli"
+  environment = terraform.workspace
+
+
 }
 
 ################################################################

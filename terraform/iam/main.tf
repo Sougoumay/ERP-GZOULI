@@ -164,3 +164,32 @@ resource "aws_iam_role_policy_attachment" "gzouli_ecs_task_custom_policy_attachm
   role       = aws_iam_role.gzouli_ecs_task_role.name
   policy_arn = aws_iam_policy.gzouli_ecs_task_policy.arn
 }
+
+# Bucket policy OAC : autorise uniquement la distribution CloudFront à faire GetObject.
+# count = 0 tant que cloudfront_distribution_arn n'est pas fourni — le bucket est créé
+# sans policy, et elle sera appliquée via un terraform apply après la création de CloudFront.
+resource "aws_s3_bucket_policy" "gzouli_frontend_policy" {
+  count  = var.cloudfront_distribution_arn != null ? 1 : 0
+  bucket = var.gzouli_frontend_id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowCloudFrontOAC"
+        Effect = "Allow"
+        Principal = {
+          Service = "cloudfront.amazonaws.com"
+        }
+        Action   = "s3:GetObject"
+        Resource = "${var.gzouli_frontend_arn}/*"
+        Condition = {
+          StringEquals = {
+            # Restreint l'accès à cette distribution précise — pas à toutes les distributions du compte
+            "AWS:SourceArn" = var.cloudfront_distribution_arn
+          }
+        }
+      }
+    ]
+  })
+}

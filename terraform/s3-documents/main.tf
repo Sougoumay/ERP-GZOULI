@@ -11,6 +11,15 @@ resource "aws_s3_bucket" "gzouli_bucket" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "gzouli_bucket_access" {
+  bucket = aws_s3_bucket.gzouli_bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
 resource "aws_s3_bucket_versioning" "gzouli_bucket_versioning" {
   bucket = aws_s3_bucket.gzouli_bucket.id
 
@@ -41,13 +50,4 @@ resource "aws_s3_bucket_cors_configuration" "gzouli_bucket_cors" {
     # Cache le résultat du preflight 1h pour éviter une requête OPTIONS avant chaque téléchargement
     max_age_seconds = 3600
   }
-}
-
-resource "aws_s3_bucket_public_access_block" "gzouli_bucket_access" {
-  bucket = aws_s3_bucket.gzouli_bucket.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
 }
