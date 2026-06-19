@@ -57,7 +57,6 @@ jobs:
     needs: build
     permissions:
       contents: read
-      security-events: write
 
     steps:
       - name: Download artifact
@@ -72,17 +71,10 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.IMAGE_LOCAL_TAG }}
-          format: sarif
-          output: trivy-results.sarif
+          format: table
           exit-code: "1"
           ignore-unfixed: true
           severity: CRITICAL,HIGH
-
-      - name: Upload résultats vers GitHub Security
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: trivy-results.sarif
 
   # ─────────────────────────────────────────────────────────────
   # JOB 3 — Push ECR
