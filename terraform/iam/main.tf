@@ -46,7 +46,7 @@ resource "aws_iam_policy" "gzouli_ecs_execution_policy" {
         Sid      = "AllowECSGetSecrets"
         Effect   = "Allow"
         Action   = ["secretsmanager:GetSecretValue"]
-        Resource = var.secret_manager_arn
+        Resource = [var.secret_manager_arn, var.rds_secret_arn]
       },
 
       # Permettre à ECS de s'authentifier auprès de ECR pour récupérer les images docker

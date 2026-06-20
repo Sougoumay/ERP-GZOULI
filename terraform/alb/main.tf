@@ -21,13 +21,8 @@ resource "aws_lb_listener" "gzouli_lb_listener_http" {
   protocol          = "HTTP"
 
   default_action {
-    type = "redirect"
-
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.gzouli_target_group.arn
   }
 
   tags = {

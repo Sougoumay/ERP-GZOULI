@@ -54,8 +54,9 @@ resource "aws_ecs_task_definition" "gzouli_ecs_task_definition" {
         { name = "AWS_REGION",             value = var.region },
         { name = "DB_HOST",                value = var.rds_endpoint },
         { name = "DB_PORT",                value = "5432" },
-        { name = "DB_NAME",                value = "gzouli" },
-        { name = "AWS_COGNITO_USER_POOL_ID", value = var.cognito_user_pool_id }
+        { name = "DB_NAME",                value = "gzouli_db" },
+        { name = "AWS_COGNITO_USER_POOL_ID", value = var.cognito_user_pool_id },
+        { name = "AWS_S3_BUCKET_NAME",      value = var.gzouli_s3_bucket_name }
       ]
 
       secrets = [

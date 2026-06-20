@@ -103,6 +103,21 @@ output "cname_validation_records" {
   value       = try(one(module.acm).cname_validation_records, null)
 }
 
+output "cloudfront_distribution_domain_name" {
+  description = "Domain name CloudFront à configurer comme CNAME dans OVH (pointe vers gzouli.sougoumay.com)"
+  value       = try(one(module.cloudfront).distribution_domain_name, null)
+}
+
+output "cloudfront_distribution_id" {
+  description = "ID de la distribution — à injecter dans le CI/CD pour les invalidations de cache"
+  value       = try(one(module.cloudfront).distribution_id, null)
+}
+
+output "route53_name_servers" {
+  description = "Les 4 NS records à ajouter dans OVH pour déléguer gzouli.sougoumay.com vers Route 53"
+  value       = try(one(module.route53).name_servers, null)
+}
+
 
 ################################################################
 ## Outputs local uniquement

@@ -18,3 +18,8 @@ variable "cloudfront_distribution_arn" {
   default     = null
   description = "ARN de la distribution CloudFront — active la bucket policy OAC une fois renseigné"
 }
+
+variable "rds_secret_arn" {
+  type        = string
+  description = "ARN du secret RDS managé (rds!...) — nécessaire pour que ECS puisse lire les credentials DB"
+}

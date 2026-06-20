@@ -55,10 +55,9 @@ module "iam" {
   source = "./iam"
 
   secret_manager_arn = try(one(module.secrets_manager).secret_manager_arn, "")
+  rds_secret_arn     = try(one(module.rds).rds_secret_arn, "")
 
-  # Laisser null jusqu'à la création de CloudFront — la bucket policy sera appliquée
-  # lors d'un second apply après avoir passé l'ARN de la distribution ici.
-  cloudfront_distribution_arn = null // TODO
+  cloudfront_distribution_arn = try(one(module.cloudfront).distribution_arn, null)
 
   gzouli_frontend_arn = one(module.s3_frontend).bucket_arn
   gzouli_frontend_id  = one(module.s3_frontend).bucket_id
@@ -88,6 +87,11 @@ module "sg" {
 module "ecr" {
   count  = local.is_prod ? 1 : 0
   source = "./ecr"
+}
+
+module "cloudwatch" {
+  count  = local.is_prod ? 1 : 0
+  source = "./cloudwatch"
 }
 
 module "rds" {
@@ -137,8 +141,33 @@ module "s3_frontend" {
   source      = "./s3-frontend"
   app_name    = "gzouli"
   environment = terraform.workspace
+}
 
+module "cloudfront" {
+  count  = local.is_prod ? 1 : 0
+  source = "./cloudfront"
 
+  s3_bucket_regional_domain_name = try(one(module.s3_frontend).bucket_regional_domain_name, "")
+  acm_certificate_arn            = try(one(module.acm).cloudfront_certificate_arn, "")
+  alb_dns_name                   = try(one(module.alb).alb_dns_name, "")
+  domain_name                    = var.domain_name
+  environment                    = terraform.workspace
+}
+
+module "route53" {
+  count  = local.is_prod ? 1 : 0
+  source = "./route53"
+
+  providers = {
+    aws           = aws
+    aws.us_east_1 = aws.us_east_1
+  }
+
+  domain_name                = var.domain_name
+  cloudfront_domain_name     = try(one(module.cloudfront).distribution_domain_name, "")
+  cloudfront_certificate_arn = try(one(module.acm).cloudfront_certificate_arn, "")
+  alb_certificate_arn        = try(one(module.acm).alb_certificate_arn, "")
+  acm_validation_options     = try(one(module.acm).alb_domain_validation_options, toset([]))
 }
 
 ################################################################
