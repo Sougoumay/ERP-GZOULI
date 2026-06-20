@@ -81,39 +81,39 @@ jobs:
   # S'exécute uniquement sur merge dans main (pas sur les PRs).
   # Pousse avec le SHA du commit et le tag latest.
   # ─────────────────────────────────────────────────────────────
-  push:
-    name: Push ECR
-    runs-on: ubuntu-latest
-    needs: scan
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
-      id-token: write
-
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: docker-image
-
-      - name: Charger l'image Docker
-        run: docker load -i image.tar
-
-      - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Tagger et pousser vers ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        run: |
-          docker tag ${{ env.IMAGE_LOCAL_TAG }} $REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-          docker tag ${{ env.IMAGE_LOCAL_TAG }} $REGISTRY/${{ env.ECR_REPOSITORY }}:latest
-          docker push $REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-          docker push $REGISTRY/${{ env.ECR_REPOSITORY }}:latest
+#  push:
+#    name: Push ECR
+#    runs-on: ubuntu-latest
+#    needs: scan
+#    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+#    permissions:
+#      contents: read
+#      id-token: write
+#
+#    steps:
+#      - name: Download artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: docker-image
+#
+#      - name: Charger l'image Docker
+#        run: docker load -i image.tar
+#
+#      - name: Configure AWS credentials (OIDC)
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+#          aws-region: ${{ env.AWS_REGION }}
+#
+#      - name: Login to Amazon ECR
+#        id: login-ecr
+#        uses: aws-actions/amazon-ecr-login@v2
+#
+#      - name: Tagger et pousser vers ECR
+#        env:
+#          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#        run: |
+#          docker tag ${{ env.IMAGE_LOCAL_TAG }} $REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+#          docker tag ${{ env.IMAGE_LOCAL_TAG }} $REGISTRY/${{ env.ECR_REPOSITORY }}:latest
+#          docker push $REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+#          docker push $REGISTRY/${{ env.ECR_REPOSITORY }}:latest

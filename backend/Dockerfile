@@ -14,7 +14,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # Étape 2 : Exécution
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:17-jre-alpine
 
 # Définir le répertoire de travail
 WORKDIR /app
