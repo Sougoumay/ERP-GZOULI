@@ -22,8 +22,7 @@ resource "aws_db_instance" "gzouli_rds" {
   vpc_security_group_ids  = [var.gzouli_rds_sg_id]
   multi_az                = true
   publicly_accessible     = false
-  # skip_final_snapshot     = false
-  # final_snapshot_identifier = "gzouli-final-snapshot"
+  skip_final_snapshot = true # false en prod
   deletion_protection     = false // Si on met true, je ne pourrai faire destroy, true en prod
 
   backup_retention_period     = 7

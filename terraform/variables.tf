@@ -51,3 +51,9 @@ variable "frontend_origins" {
   type        = list(string)
   description = "Origines Angular autorisées à accéder au bucket S3 via URL présignée"
 }
+
+variable "image_tag" {
+  type        = string
+  description = "Le tag de l'image backend dans ECR (ex: latest, ou SHA du commit en CI/CD)"
+  default     = "latest"
+}

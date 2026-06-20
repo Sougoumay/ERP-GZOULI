@@ -58,7 +58,7 @@ module "iam" {
 
   # Laisser null jusqu'à la création de CloudFront — la bucket policy sera appliquée
   # lors d'un second apply après avoir passé l'ARN de la distribution ici.
-  cloudfront_distribution_arn = null
+  cloudfront_distribution_arn = null // TODO
 
   gzouli_frontend_arn = one(module.s3_frontend).bucket_arn
   gzouli_frontend_id  = one(module.s3_frontend).bucket_id
@@ -99,6 +99,19 @@ module "rds" {
   gzouli_rds_sg_id    = try(one(module.sg).gzouli_rds_sg_id, "")
 }
 
+module "alb" {
+  count  = local.is_prod ? 1 : 0
+  source = "./alb"
+
+  alb_security_group_id = try(one(module.sg).gzouli_alb_sg_id, "")
+  public_subnet_ids = [
+    try(one(module.networking).pb_subnet_1_id, ""),
+    try(one(module.networking).pb_subnet_2_id, ""),
+  ]
+  vpc_id              = try(one(module.networking).main_vpc_id, "")
+  acm_certificate_arn = try(one(module.acm).alb_certificate_arn, "")
+}
+
 module "ecs" {
   count  = local.is_prod ? 1 : 0
   source = "./ecs"
@@ -108,12 +121,12 @@ module "ecs" {
   memory                = 1024
   execution_role_arn    = try(one(module.iam).gzouli_ecs_execution_role_arn, "")
   task_role_arn         = try(one(module.iam).gzouli_ecs_task_role_arn, "")
-  backend_ecr_image_uri = ""
+  backend_ecr_image_uri = "${try(one(module.ecr).gzouli_ecr_repo_url, "")}:${var.image_tag}"
   cognito_user_pool_id  = module.cognito.user_pool_id
   rds_endpoint          = try(one(module.rds).rds_endpoint, "")
   db_credentials_arn    = try(one(module.rds).rds_secret_arn, "")
   gzouli_s3_bucket_name = module.s3.bucket_name
-  alb_target_group_arn  = ""
+  alb_target_group_arn  = try(one(module.alb).target_group_arn, "")
   gzouli_ecs_sg_id      = try(one(module.sg).gzouli_ecs_sg_id, "")
   private_subnet_1_id   = try(one(module.networking).private_subnet_1_id, "")
   private_subnet_2_id   = try(one(module.networking).private_subnet_2_id, "")

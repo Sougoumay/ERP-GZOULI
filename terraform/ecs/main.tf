@@ -18,7 +18,6 @@ resource "aws_ecs_cluster" "gzouli_ecs_cluster" {
   }
 }
 
-// TODO
 resource "aws_ecs_task_definition" "gzouli_ecs_task_definition" {
   family                = "service"
   requires_compatibilities = ["FARGATE"]
@@ -45,7 +44,7 @@ resource "aws_ecs_task_definition" "gzouli_ecs_task_definition" {
       portMappings = [
         {
           containerPort = 8080
-          hostPort      = 80
+          hostPort      = 8080
           protocol      = "tcp"
         }
       ]

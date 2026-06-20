@@ -9,11 +9,6 @@ resource "aws_ecr_repository" "gzouli_ecr_repository" {
     filter_type = "WILDCARD"
   }
 
-  image_tag_mutability_exclusion_filter {
-    filter      = "dev-*"
-    filter_type = "WILDCARD"
-  }
-
   image_scanning_configuration {
     scan_on_push = true
   }
