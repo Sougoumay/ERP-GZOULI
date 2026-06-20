@@ -16,6 +16,9 @@ RUN mvn clean package -DskipTests
 # Étape 2 : Exécution
 FROM eclipse-temurin:17-jre-alpine
 
+# Mettre à jour les packages système pour éliminer les CVEs des packages Alpine
+RUN apk update && apk upgrade --no-cache
+
 # Définir le répertoire de travail
 WORKDIR /app
 
