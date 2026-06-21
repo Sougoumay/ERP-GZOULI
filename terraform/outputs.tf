@@ -78,13 +78,13 @@ output "gzouli_ecs_cluster_arn" {
 }
 
 output "alb_certificate_arn" {
-  description = "ARN du certificat ACM pour l'ALB (eu-west-3)"
-  value       = try(one(module.acm).alb_certificate_arn, null)
+  description = "ARN du certificat ACM pour l'ALB (eu-west-3) — validé DNS"
+  value       = try(one(module.route53).alb_validated_certificate_arn, null)
 }
 
 output "cloudfront_certificate_arn" {
-  description = "ARN du certificat ACM pour CloudFront (us-east-1)"
-  value       = try(one(module.acm).cloudfront_certificate_arn, null)
+  description = "ARN du certificat ACM pour CloudFront (us-east-1) — validé DNS"
+  value       = try(one(module.route53).cloudfront_validated_certificate_arn, null)
 }
 
 # À renseigner comme origin_domain_name dans la distribution CloudFront
@@ -96,11 +96,6 @@ output "frontend_bucket_regional_domain_name" {
 output "frontend_bucket_arn" {
   description = "ARN du bucket frontend — nécessaire pour la bucket policy OAC"
   value       = try(one(module.s3_frontend).bucket_arn, null)
-}
-
-output "cname_validation_records" {
-  description = "Enregistrements CNAME à ajouter manuellement dans OVH"
-  value       = try(one(module.acm).cname_validation_records, null)
 }
 
 output "cloudfront_distribution_domain_name" {

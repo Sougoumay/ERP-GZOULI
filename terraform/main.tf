@@ -33,18 +33,6 @@ module "s3" {
 ## try(one(module.xxx).output, "") → renvoie "" si le module
 ##   n'existe pas, évite les erreurs de référence croisée
 ################################################################
-module "acm" {
-  count  = local.is_prod ? 1 : 0
-  source = "./acm"
-
-  providers = {
-    aws           = aws
-    aws.us_east_1 = aws.us_east_1
-  }
-
-  domain_name = "gzouli.sougoumay.com"
-}
-
 module "secrets_manager" {
   count  = local.is_prod ? 1 : 0
   source = "./secrets-manager"
@@ -164,10 +152,7 @@ module "route53" {
     aws.us_east_1 = aws.us_east_1
   }
 
-  domain_name                = var.domain_name
-  cloudfront_certificate_arn = try(one(module.acm).cloudfront_certificate_arn, "")
-  alb_certificate_arn        = try(one(module.acm).alb_certificate_arn, "")
-  acm_validation_options     = try(one(module.acm).alb_domain_validation_options, toset([]))
+  domain_name = var.domain_name
 }
 
 ################################################################
