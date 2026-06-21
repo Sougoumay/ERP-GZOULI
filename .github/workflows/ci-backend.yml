@@ -149,9 +149,3 @@ jobs:
             --service ${{ env.ECS_SERVICE }} \
             --force-new-deployment \
             --no-cli-pager
-
-      - name: Attendre que le service soit stable
-        run: |
-          aws ecs wait services-stable \
-            --cluster ${{ env.ECS_CLUSTER }} \
-            --services ${{ env.ECS_SERVICE }}
