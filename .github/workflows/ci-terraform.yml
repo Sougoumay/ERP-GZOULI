@@ -74,17 +74,12 @@ jobs:
 
       - name: Terraform Validate
         working-directory: ${{ env.TF_DIR }}
-        run: |
-          terraform workspace select ${{ env.TF_WORKSPACE }} || \
-            terraform workspace new ${{ env.TF_WORKSPACE }}
-          terraform validate
+        run: terraform validate
 
       - name: Terraform Plan
         id: plan
         working-directory: ${{ env.TF_DIR }}
-        run: |
-          terraform workspace select ${{ env.TF_WORKSPACE }}
-          terraform plan -no-color -input=false -out=tfplan 2>&1 | tee plan-output.txt
+        run: terraform plan -no-color -input=false -out=tfplan 2>&1 | tee plan-output.txt
         continue-on-error: true
 
       - name: Commenter le plan sur la PR
