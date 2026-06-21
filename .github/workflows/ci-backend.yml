@@ -12,6 +12,8 @@ env:
   AWS_REGION: eu-west-3
   ECR_REPOSITORY: gzouli-ecr-repository
   IMAGE_LOCAL_TAG: gzouli-backend:${{ github.sha }}
+  ECS_CLUSTER: gzouli-ecs-cluster
+  ECS_SERVICE: gzouli-service
 
 # ─────────────────────────────────────────────────────────────
 # JOB 1 — Build
@@ -81,39 +83,75 @@ jobs:
   # S'exécute uniquement sur merge dans main (pas sur les PRs).
   # Pousse avec le SHA du commit et le tag latest.
   # ─────────────────────────────────────────────────────────────
-#  push:
-#    name: Push ECR
-#    runs-on: ubuntu-latest
-#    needs: scan
-#    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-#    permissions:
-#      contents: read
-#      id-token: write
-#
-#    steps:
-#      - name: Download artifact
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: docker-image
-#
-#      - name: Charger l'image Docker
-#        run: docker load -i image.tar
-#
-#      - name: Configure AWS credentials (OIDC)
-#        uses: aws-actions/configure-aws-credentials@v4
-#        with:
-#          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-#          aws-region: ${{ env.AWS_REGION }}
-#
-#      - name: Login to Amazon ECR
-#        id: login-ecr
-#        uses: aws-actions/amazon-ecr-login@v2
-#
-#      - name: Tagger et pousser vers ECR
-#        env:
-#          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#        run: |
-#          docker tag ${{ env.IMAGE_LOCAL_TAG }} $REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-#          docker tag ${{ env.IMAGE_LOCAL_TAG }} $REGISTRY/${{ env.ECR_REPOSITORY }}:latest
-#          docker push $REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-#          docker push $REGISTRY/${{ env.ECR_REPOSITORY }}:latest
+  push:
+    name: Push ECR
+    runs-on: ubuntu-latest
+    needs: scan
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+
+      - name: Charger l'image Docker
+        run: docker load -i image.tar
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Tagger et pousser vers ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker tag ${{ env.IMAGE_LOCAL_TAG }} $REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          docker tag ${{ env.IMAGE_LOCAL_TAG }} $REGISTRY/${{ env.ECR_REPOSITORY }}:latest
+          docker push $REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          docker push $REGISTRY/${{ env.ECR_REPOSITORY }}:latest
+
+  # ─────────────────────────────────────────────────────────────
+  # JOB 4 — Deploy ECS
+  # Force un redéploiement du service ECS après le push ECR.
+  # ECS arrête les anciennes tasks et démarre des nouvelles avec
+  # l'image :latest qui vient d'être poussée.
+  # ─────────────────────────────────────────────────────────────
+  deploy:
+    name: Deploy ECS
+    runs-on: ubuntu-latest
+    needs: push
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Force new ECS deployment
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --service ${{ env.ECS_SERVICE }} \
+            --force-new-deployment \
+            --no-cli-pager
+
+      - name: Attendre que le service soit stable
+        run: |
+          aws ecs wait services-stable \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --services ${{ env.ECS_SERVICE }}
