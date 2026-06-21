@@ -166,10 +166,7 @@ resource "aws_iam_role_policy_attachment" "gzouli_ecs_task_custom_policy_attachm
 }
 
 # Bucket policy OAC : autorise uniquement la distribution CloudFront à faire GetObject.
-# count = 0 tant que cloudfront_distribution_arn n'est pas fourni — le bucket est créé
-# sans policy, et elle sera appliquée via un terraform apply après la création de CloudFront.
 resource "aws_s3_bucket_policy" "gzouli_frontend_policy" {
-  count  = var.cloudfront_distribution_arn != null ? 1 : 0
   bucket = var.gzouli_frontend_id
 
   policy = jsonencode({

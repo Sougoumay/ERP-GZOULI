@@ -42,17 +42,3 @@ resource "aws_acm_certificate_validation" "cloudfront" {
   certificate_arn         = var.cloudfront_certificate_arn
   validation_record_fqdns = [for record in aws_route53_record.acm_validation : record.fqdn]
 }
-
-# Alias A record : gzouli.sougoumay.com → CloudFront
-# Z2FDTNDATAQYW2 est le hosted zone ID fixe de toutes les distributions CloudFront
-resource "aws_route53_record" "cloudfront" {
-  zone_id = aws_route53_zone.gzouli.zone_id
-  name    = var.domain_name
-  type    = "A"
-
-  alias {
-    name                   = var.cloudfront_domain_name
-    zone_id                = "Z2FDTNDATAQYW2"
-    evaluate_target_health = false
-  }
-}

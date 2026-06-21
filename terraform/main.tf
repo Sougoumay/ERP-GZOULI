@@ -113,7 +113,7 @@ module "alb" {
     try(one(module.networking).pb_subnet_2_id, ""),
   ]
   vpc_id              = try(one(module.networking).main_vpc_id, "")
-  acm_certificate_arn = try(one(module.acm).alb_certificate_arn, "")
+  acm_certificate_arn = try(one(module.route53).alb_validated_certificate_arn, "")
 }
 
 module "ecs" {
@@ -148,10 +148,11 @@ module "cloudfront" {
   source = "./cloudfront"
 
   s3_bucket_regional_domain_name = try(one(module.s3_frontend).bucket_regional_domain_name, "")
-  acm_certificate_arn            = try(one(module.acm).cloudfront_certificate_arn, "")
+  acm_certificate_arn            = try(one(module.route53).cloudfront_validated_certificate_arn, "")
   alb_dns_name                   = try(one(module.alb).alb_dns_name, "")
   domain_name                    = var.domain_name
   environment                    = terraform.workspace
+  route53_zone_id                = try(one(module.route53).hosted_zone_id, "")
 }
 
 module "route53" {
@@ -164,7 +165,6 @@ module "route53" {
   }
 
   domain_name                = var.domain_name
-  cloudfront_domain_name     = try(one(module.cloudfront).distribution_domain_name, "")
   cloudfront_certificate_arn = try(one(module.acm).cloudfront_certificate_arn, "")
   alb_certificate_arn        = try(one(module.acm).alb_certificate_arn, "")
   acm_validation_options     = try(one(module.acm).alb_domain_validation_options, toset([]))

@@ -97,3 +97,16 @@ resource "aws_cloudfront_distribution" "gzouli_frontend" {
     Env     = var.environment
   }
 }
+
+# Z2FDTNDATAQYW2 est le hosted zone ID fixe de toutes les distributions CloudFront
+resource "aws_route53_record" "alias" {
+  zone_id = var.route53_zone_id
+  name    = var.domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.gzouli_frontend.domain_name
+    zone_id                = "Z2FDTNDATAQYW2"
+    evaluate_target_health = false
+  }
+}

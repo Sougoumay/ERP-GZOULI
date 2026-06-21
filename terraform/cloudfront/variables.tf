@@ -22,3 +22,8 @@ variable "alb_dns_name" {
   type        = string
   description = "DNS name de l'ALB — utilisé comme origine CloudFront pour /api/*"
 }
+
+variable "route53_zone_id" {
+  type        = string
+  description = "ID de la zone Route 53 — pour créer l'alias A record vers cette distribution"
+}

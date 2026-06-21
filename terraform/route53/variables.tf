@@ -3,11 +3,6 @@ variable "domain_name" {
   description = "Le sous-domaine géré par cette zone Route 53 (ex: gzouli.sougoumay.com)"
 }
 
-variable "cloudfront_domain_name" {
-  type        = string
-  description = "Domain name de la distribution CloudFront (ex: d1xxxxxxxx.cloudfront.net)"
-}
-
 variable "cloudfront_certificate_arn" {
   type        = string
   description = "ARN du certificat ACM CloudFront (us-east-1)"

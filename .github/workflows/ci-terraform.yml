@@ -113,13 +113,6 @@ jobs:
   # Uniquement sur push dans infra (jamais sur PR).
   # Bloqué par l'approbation manuelle via GitHub Environment
   # "production" — configure les reviewers dans Settings → Environments.
-  #
-  # Deux passes sont nécessaires à cause du bootstrap CloudFront :
-  #   Passe 1 (ciblée) : crée s3_frontend + cloudfront
-  #     → après cette passe, l'ARN CloudFront est dans le state
-  #   Passe 2 (complète) : module.iam lit l'ARN et crée la
-  #     bucket policy OAC (count = 1 désormais)
-  # À partir du 2ème apply la passe 1 est un no-op.
   # ─────────────────────────────────────────────────────────────
   apply:
     name: Apply
@@ -150,15 +143,6 @@ jobs:
         working-directory: ${{ env.TF_DIR }}
         run: terraform init -input=false
 
-      - name: Terraform Apply — Passe 1 (bootstrap S3 + CloudFront)
-        working-directory: ${{ env.TF_DIR }}
-        run: |
-          terraform apply \
-            -target=module.s3_frontend \
-            -target=module.cloudfront \
-            -auto-approve \
-            -input=false
-
-      - name: Terraform Apply — Passe 2 (infra complète)
+      - name: Terraform Apply
         working-directory: ${{ env.TF_DIR }}
         run: terraform apply -auto-approve -input=false
