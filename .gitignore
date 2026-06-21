@@ -30,4 +30,5 @@ crash.*.log
 # Bloquer les fichiers de variables locales qui contiennent des secrets
 *.tfvars
 *.tfvars.json
+!terraform/terraform.tfvars
 *.tfbackend
