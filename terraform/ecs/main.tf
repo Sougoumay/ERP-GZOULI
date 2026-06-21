@@ -13,20 +13,20 @@ resource "aws_ecs_cluster" "gzouli_ecs_cluster" {
   }
 
   tags = {
-    Name = "gzouli_ecs_cluster"
+    Name    = "gzouli_ecs_cluster"
     Project = "gzouli"
   }
 }
 
 resource "aws_ecs_task_definition" "gzouli_ecs_task_definition" {
-  family                = "service"
+  family                   = "service"
   requires_compatibilities = ["FARGATE"]
-  network_mode = "awsvpc"
-  cpu          = var.cpu
-  memory       = var.memory
+  network_mode             = "awsvpc"
+  cpu                      = var.cpu
+  memory                   = var.memory
 
   execution_role_arn = var.execution_role_arn
-  task_role_arn = var.task_role_arn
+  task_role_arn      = var.task_role_arn
 
   runtime_platform {
     operating_system_family = "LINUX"
@@ -37,8 +37,8 @@ resource "aws_ecs_task_definition" "gzouli_ecs_task_definition" {
     {
       name      = "gzouli-backend"
       image     = var.backend_ecr_image_uri
-      cpu          = var.cpu
-      memory       = var.memory
+      cpu       = var.cpu
+      memory    = var.memory
       essential = true
 
       portMappings = [
@@ -51,16 +51,16 @@ resource "aws_ecs_task_definition" "gzouli_ecs_task_definition" {
 
       environment = [
         { name = "SPRING_PROFILES_ACTIVE", value = "prod" },
-        { name = "AWS_REGION",             value = var.region },
-        { name = "DB_HOST",                value = var.rds_endpoint },
-        { name = "DB_PORT",                value = "5432" },
-        { name = "DB_NAME",                value = "gzouli_db" },
+        { name = "AWS_REGION", value = var.region },
+        { name = "DB_HOST", value = var.rds_endpoint },
+        { name = "DB_PORT", value = "5432" },
+        { name = "DB_NAME", value = "gzouli_db" },
         { name = "AWS_COGNITO_USER_POOL_ID", value = var.cognito_user_pool_id },
-        { name = "AWS_S3_BUCKET_NAME",      value = var.gzouli_s3_bucket_name }
+        { name = "AWS_S3_BUCKET_NAME", value = var.gzouli_s3_bucket_name }
       ]
 
       secrets = [
-        { name = "DB_USER",     valueFrom = "${var.db_credentials_arn}:username::" },
+        { name = "DB_USER", valueFrom = "${var.db_credentials_arn}:username::" },
         { name = "DB_PASSWORD", valueFrom = "${var.db_credentials_arn}:password::" }
       ]
 
@@ -81,19 +81,19 @@ resource "aws_ecs_task_definition" "gzouli_ecs_task_definition" {
         }
       }
     }
-    ])
+  ])
 
-    tags = {
-      Name = "gzouli_ecs_task_definition"
-      Project = "gzouli"
-    }
+  tags = {
+    Name    = "gzouli_ecs_task_definition"
+    Project = "gzouli"
+  }
 }
 
 resource "aws_ecs_service" "gzouli_ecs_service" {
   name            = "gzouli-service"
   cluster         = aws_ecs_cluster.gzouli_ecs_cluster.id
   task_definition = aws_ecs_task_definition.gzouli_ecs_task_definition.arn
-  desired_count   = 2   # 2 tasks pour la HA
+  desired_count   = 2 # 2 tasks pour la HA
   launch_type     = "FARGATE"
 
   network_configuration {
@@ -109,7 +109,7 @@ resource "aws_ecs_service" "gzouli_ecs_service" {
   }
 
   tags = {
-    Name = "gzouli_ecs_service"
+    Name    = "gzouli_ecs_service"
     Project = "gzouli"
   }
 }

@@ -73,9 +73,9 @@ resource "aws_cognito_user_pool_client" "gzouli_app_client" {
   generate_secret = false # Client public — frontend navigateur
 
   explicit_auth_flows = [
-    "ALLOW_USER_SRP_AUTH",        # Auth SRP (recommandée, mot de passe jamais en clair)
-    "ALLOW_USER_PASSWORD_AUTH",   # Auth directe email/mdp (fallback)
-    "ALLOW_REFRESH_TOKEN_AUTH"    # Renouvellement silencieux du token
+    "ALLOW_USER_SRP_AUTH",      # Auth SRP (recommandée, mot de passe jamais en clair)
+    "ALLOW_USER_PASSWORD_AUTH", # Auth directe email/mdp (fallback)
+    "ALLOW_REFRESH_TOKEN_AUTH"  # Renouvellement silencieux du token
   ]
 
   # Durées de vie des tokens

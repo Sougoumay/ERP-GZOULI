@@ -1,11 +1,11 @@
 resource "aws_lb" "gzouli_alb" {
-  name               = "gzouli-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [var.alb_security_group_id]
-  subnets            = var.public_subnet_ids
+  name                 = "gzouli-alb"
+  internal             = false
+  load_balancer_type   = "application"
+  security_groups      = [var.alb_security_group_id]
+  subnets              = var.public_subnet_ids
   preserve_host_header = true
-  ip_address_type = "ipv4"
+  ip_address_type      = "ipv4"
 
   enable_deletion_protection = false
 

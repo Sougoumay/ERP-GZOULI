@@ -1,8 +1,8 @@
 resource "aws_ecr_repository" "gzouli_ecr_repository" {
 
-  name = "gzouli-ecr-repository"
+  name                 = "gzouli-ecr-repository"
   image_tag_mutability = "IMMUTABLE_WITH_EXCLUSION"
-  force_delete = true
+  force_delete         = true
 
   image_tag_mutability_exclusion_filter {
     filter      = "latest*"
@@ -14,7 +14,7 @@ resource "aws_ecr_repository" "gzouli_ecr_repository" {
   }
 
   tags = {
-    Name = "gzouli_ecr_repository"
+    Name    = "gzouli_ecr_repository"
     Project = "gzouli"
   }
 }

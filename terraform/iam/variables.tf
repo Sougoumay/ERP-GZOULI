@@ -4,12 +4,12 @@ variable "secret_manager_arn" {
 }
 
 variable "gzouli_frontend_arn" {
-  type = string
+  type        = string
   description = "L'ARN du bucket qui héberge le code statique du front"
 }
 
 variable "gzouli_frontend_id" {
-  type = string
+  type        = string
   description = "L'Id du bucket qui héberge le code statique du front"
 }
 

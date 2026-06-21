@@ -8,15 +8,15 @@ resource "aws_iam_role" "gzouli_ecs_execution_role" {
   name = "gzouli-ecs-execution-role"
   path = "/project/gzouli/"
 
-  assume_role_policy  = jsonencode({
-    Version           = "2012-10-17"
-    Statement         = [
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
       {
-        Sid           = "AmazonECSTaskExecutionRolePolicy"
-        Action        = "sts:AssumeRole"        # Autoriser ECS à assumer ce role
-        Effect        = "Allow"
-        Principal     = {
-          Service     = "ecs-tasks.amazonaws.com"
+        Sid    = "AmazonECSTaskExecutionRolePolicy"
+        Action = "sts:AssumeRole" # Autoriser ECS à assumer ce role
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
         }
       }
     ]
@@ -94,7 +94,7 @@ resource "aws_iam_role" "gzouli_ecs_task_role" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid = "GzouliECSTaskRoleAssumption"
+        Sid    = "GzouliECSTaskRoleAssumption"
         Effect = "Allow"
         Action = "sts:AssumeRole"
         Principal = {
@@ -126,10 +126,10 @@ resource "aws_iam_policy" "gzouli_ecs_task_policy" {
         Sid    = "AllowECSActWithCognito"
         Effect = "Allow"
         Action = [
-          "cognito-idp:AdminCreateUser",       # createCognitoUser()
-          "cognito-idp:AdminAddUserToGroup",   # createCognitoUser() — ajout au groupe ROLE
-          "cognito-idp:AdminDisableUser",      # disableUser()
-          "cognito-idp:AdminEnableUser"        # enableUser()
+          "cognito-idp:AdminCreateUser",     # createCognitoUser()
+          "cognito-idp:AdminAddUserToGroup", # createCognitoUser() — ajout au groupe ROLE
+          "cognito-idp:AdminDisableUser",    # disableUser()
+          "cognito-idp:AdminEnableUser"      # enableUser()
         ]
         Resource = "*" # À restreindre avec l'ARN de User Pool Cognito // TODO
       },

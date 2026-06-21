@@ -3,7 +3,7 @@ resource "aws_secretsmanager_secret" "gzouli_secret_manager" {
 
 
   tags = {
-    Name = "gzouli_secret_manager"
+    Name    = "gzouli_secret_manager"
     Project = "gzouli"
   }
 }

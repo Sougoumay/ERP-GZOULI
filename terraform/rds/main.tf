@@ -9,26 +9,26 @@ resource "aws_db_subnet_group" "social_media_rds_subnets" {
 }
 
 resource "aws_db_instance" "gzouli_rds" {
-  identifier              = "gzouli-db"
-  allocated_storage       = 20
-  max_allocated_storage   = 100
-  engine                  = "postgres"
-  engine_version          = "16"
-  instance_class          = "db.t3.micro"
-  db_name                 = "gzouli_db"
-  username                = "gzouli_db_admin"
+  identifier                  = "gzouli-db"
+  allocated_storage           = 20
+  max_allocated_storage       = 100
+  engine                      = "postgres"
+  engine_version              = "16"
+  instance_class              = "db.t3.micro"
+  db_name                     = "gzouli_db"
+  username                    = "gzouli_db_admin"
   manage_master_user_password = true
-  db_subnet_group_name    = aws_db_subnet_group.social_media_rds_subnets.name
-  vpc_security_group_ids  = [var.gzouli_rds_sg_id]
-  multi_az                = true
-  publicly_accessible     = false
-  skip_final_snapshot = true # false en prod
-  deletion_protection     = false // Si on met true, je ne pourrai faire destroy, true en prod
+  db_subnet_group_name        = aws_db_subnet_group.social_media_rds_subnets.name
+  vpc_security_group_ids      = [var.gzouli_rds_sg_id]
+  multi_az                    = true
+  publicly_accessible         = false
+  skip_final_snapshot         = true  # false en prod
+  deletion_protection         = false // Si on met true, je ne pourrai faire destroy, true en prod
 
   backup_retention_period     = 7
-  storage_encrypted       = true
-  storage_type            = "gp3"
-  allow_major_version_upgrade = false  # Risqué en prod
+  storage_encrypted           = true
+  storage_type                = "gp3"
+  allow_major_version_upgrade = false # Risqué en prod
 
   timeouts {
     create = "3h"
