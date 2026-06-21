@@ -81,31 +81,39 @@ jobs:
           scanners: vuln
 
   # ─────────────────────────────────────────────────────────────
-  # JOB 3 — Deploy S3
+  # JOB 3 — Deploy S3 + invalidation CloudFront
   # S'exécute uniquement sur merge dans main (pas sur les PRs).
-  # Synchronise le dist/ vers S3 et supprime les fichiers obsolètes.
+  # Synchronise le dist/ vers S3, supprime les fichiers obsolètes,
+  # puis invalide le cache CloudFront pour servir la nouvelle version.
   # ─────────────────────────────────────────────────────────────
-#  deploy:
-#    name: Deploy S3
-#    runs-on: ubuntu-latest
-#    needs: scan
-#    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-#    permissions:
-#      contents: read
-#      id-token: write
-#
-#    steps:
-#      - name: Download artifact
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: frontend-dist
-#          path: dist/
-#
-#      - name: Configure AWS credentials (OIDC)
-#        uses: aws-actions/configure-aws-credentials@v4
-#        with:
-#          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-#          aws-region: ${{ env.AWS_REGION }}
-#
-#      - name: Deploy vers S3
-#        run: aws s3 sync dist/ s3://${{ env.S3_BUCKET }} --delete
+  deploy:
+    name: Deploy S3
+    runs-on: ubuntu-latest
+    needs: scan
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist/
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy vers S3
+        run: aws s3 sync dist/ s3://${{ env.S3_BUCKET }} --delete
+
+      - name: Invalider le cache CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*" \
+            --no-cli-pager
