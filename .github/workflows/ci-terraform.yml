@@ -108,59 +108,57 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
-      - name: Upload tfplan
-        if: github.event_name == 'push'
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan
-          path: ${{ env.TF_DIR }}/tfplan
-          retention-days: 1
-
   # ─────────────────────────────────────────────────────────────
   # JOB 3 — Apply
   # Uniquement sur push dans infra (jamais sur PR).
   # Bloqué par l'approbation manuelle via GitHub Environment
   # "production" — configure les reviewers dans Settings → Environments.
-  # Réutilise le tfplan du job plan : l'apply exécute exactement
-  # ce qui a été reviewé, sans re-planifier.
+  #
+  # Deux passes sont nécessaires à cause du bootstrap CloudFront :
+  #   Passe 1 (ciblée) : crée s3_frontend + cloudfront
+  #     → après cette passe, l'ARN CloudFront est dans le state
+  #   Passe 2 (complète) : module.iam lit l'ARN et crée la
+  #     bucket policy OAC (count = 1 désormais)
+  # À partir du 2ème apply la passe 1 est un no-op.
   # ─────────────────────────────────────────────────────────────
-#  apply:
-#    name: Apply
-#    runs-on: ubuntu-latest
-#    needs: plan
-#    if: github.event_name == 'push' && github.ref == 'refs/heads/infra'
-#    environment: production
-#    permissions:
-#      contents: read
-#      id-token: write
-#
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4
-#
-#      - name: Setup Terraform
-#        uses: hashicorp/setup-terraform@v3
-#        with:
-#          terraform_version: "~1.9"
-#
-#      - name: Configure AWS credentials (OIDC)
-#        uses: aws-actions/configure-aws-credentials@v4
-#        with:
-#          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-#          aws-region: ${{ env.AWS_REGION }}
-#
-#      - name: Terraform Init
-#        working-directory: ${{ env.TF_DIR }}
-#        run: terraform init -input=false
-#
-#      - name: Download tfplan
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: tfplan
-#          path: ${{ env.TF_DIR }}
-#
-#      - name: Terraform Apply
-#        working-directory: ${{ env.TF_DIR }}
-#        run: |
-#          terraform workspace select ${{ env.TF_WORKSPACE }}
-#          terraform apply -auto-approve -input=false tfplan
+  apply:
+    name: Apply
+    runs-on: ubuntu-latest
+    needs: plan
+    if: github.event_name == 'push' && github.ref == 'refs/heads/infra'
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.10"
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN_TERRAFORM }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform Init
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform init -input=false
+
+      - name: Terraform Apply — Passe 1 (bootstrap S3 + CloudFront)
+        working-directory: ${{ env.TF_DIR }}
+        run: |
+          terraform apply \
+            -target=module.s3_frontend \
+            -target=module.cloudfront \
+            -auto-approve \
+            -input=false
+
+      - name: Terraform Apply — Passe 2 (infra complète)
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform apply -auto-approve -input=false
