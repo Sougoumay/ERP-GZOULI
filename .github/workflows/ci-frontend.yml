@@ -1,0 +1,108 @@
+name: Frontend — Build, Scan & Deploy
+
+on:
+  push:
+    branches: [main]
+    paths: [frontend/**]
+  pull_request:
+    branches: [main]
+    paths: [frontend/**]
+
+env:
+  AWS_REGION: eu-west-3
+  S3_BUCKET: gzouli-frontend-prod
+
+# ─────────────────────────────────────────────────────────────
+# JOB 1 — Build
+# Installe les dépendances et compile l'app Angular en mode
+# production. Le build est sauvegardé en artifact pour le deploy.
+# ─────────────────────────────────────────────────────────────
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Installer les dépendances
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build production
+        working-directory: frontend
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist/front/browser/
+          retention-days: 1
+
+  # ─────────────────────────────────────────────────────────────
+  # JOB 2 — Scan Trivy
+  # Analyse le package-lock.json pour détecter les CVEs dans les
+  # dépendances npm. Bloque le pipeline sur CRITICAL ou HIGH.
+  # ─────────────────────────────────────────────────────────────
+  scan:
+    name: Scan Trivy
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Scan Trivy — CRITICAL et HIGH
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: frontend
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+          scanners: vuln
+
+  # ─────────────────────────────────────────────────────────────
+  # JOB 3 — Deploy S3
+  # S'exécute uniquement sur merge dans main (pas sur les PRs).
+  # Synchronise le dist/ vers S3 et supprime les fichiers obsolètes.
+  # ─────────────────────────────────────────────────────────────
+#  deploy:
+#    name: Deploy S3
+#    runs-on: ubuntu-latest
+#    needs: scan
+#    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+#    permissions:
+#      contents: read
+#      id-token: write
+#
+#    steps:
+#      - name: Download artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: frontend-dist
+#          path: dist/
+#
+#      - name: Configure AWS credentials (OIDC)
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+#          aws-region: ${{ env.AWS_REGION }}
+#
+#      - name: Deploy vers S3
+#        run: aws s3 sync dist/ s3://${{ env.S3_BUCKET }} --delete
