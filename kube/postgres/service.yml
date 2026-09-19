@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gzouli-db-svc
+  namespace: gzouli-dev
+  labels:
+    app: gzouli-db-svc-label-app
+spec:
+  ports:
+    - port: 5434 # le port exposé par le service
+      targetPort: 5432 # le port exposé par le pod
+  selector:
+    app: gzouli-db

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gzouli-db-deploy
+  namespace: gzouli-dev
+  labels:
+    app: gzouli-db-deploy-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gzouli-db
+  template:
+    metadata:
+      labels:
+        app: gzouli-db
+    spec:
+      containers:
+        - name: gzouli-db-container
+          image: postgres:16
+          ports:
+            - containerPort: 5432
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: gzouli-db-cm
+            - secretRef:
+                name: gzouli-db-secret
