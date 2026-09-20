@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gzouli-back-cm
+  namespace: gzouli-dev
+  labels:
+    app: gzouli-back-cm-app
+data:
+  SPRING_PROFILES_ACTIVE: "docker"
+  DB_PORT: "5434"
+  AWS_REGION: "eu-west-3"
+  AWS_COGNITO_USER_POOL_ID: "eu-west-3_ZczprBKfd"
+  AWS_COGNITO_APP_CLIENT_ID: "6of741h2o8v6jv3fn1afe2o949"
+  AWS_S3_BUCKET_NAME: "gzouli-documents-local"

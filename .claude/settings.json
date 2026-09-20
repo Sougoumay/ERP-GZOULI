@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "SESSION_ID=$(jq -r '.session_id // \"unknown\"'); FLAG=\"/tmp/memory-reminder-$SESSION_ID\"; if [ ! -f \"$FLAG\" ]; then touch \"$FLAG\"; echo '{\"systemMessage\": \"Rappel : mets a jour la memoire projet avant de fermer la session.\"}'; fi",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -31,3 +31,7 @@ crash.*.log
 *.tfvars
 *.tfvars.json
 *.tfbackend
+
+
+**/.env
+**/secret.yml

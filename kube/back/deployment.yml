@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gzouli-back-deployment
+  namespace: gzouli-dev
+  labels:
+    app: gzouli-back-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: gzouli-back
+  template:
+    metadata:
+      labels:
+        app: gzouli-back # doit être exactement comme le selector
+    spec:
+      containers:
+        - name: gzouli-back
+          image: gzouli-backend:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: gzouli-db-svc
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: gzouli-db-cm
+                  key: POSTGRES_DB
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gzouli-db-secret
+                  key: POSTGRES_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gzouli-db-secret
+                  key: POSTGRES_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: gzouli-back-cm
+            - secretRef:
+                name: gzouli-back-secret
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 12
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 12
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 12
+            timeoutSeconds: 5

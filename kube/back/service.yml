@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gzouli-back-svc
+  namespace: gzouli-dev
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: gzouli-back # Le même que celui du pod

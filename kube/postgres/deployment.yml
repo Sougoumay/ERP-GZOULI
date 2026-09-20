@@ -26,3 +26,21 @@ spec:
                 name: gzouli-db-cm
             - secretRef:
                 name: gzouli-db-secret
+          startupProbe:
+            exec:
+              command: [ "sh", "-c", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB" ]
+            periodSeconds: 5
+            failureThreshold: 12
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command: [ "sh", "-c", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB" ]
+            periodSeconds: 10
+            failureThreshold: 5
+            timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command: [ "sh", "-c", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB" ]
+            periodSeconds: 20
+            failureThreshold: 6
+            timeoutSeconds: 5
